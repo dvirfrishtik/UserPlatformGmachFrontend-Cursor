@@ -784,6 +784,171 @@ function UnitNotForBorrowerPopup({
   );
 }
 
+/** גיל מינימלי: 17 שנים ו־10 חודשים (בחודשים) */
+const MIN_AGE_MONTHS = 17 * 12 + 10;
+
+function isUnderMinAge(birthDateStr: string): boolean {
+  if (!birthDateStr || !/^\d{4}-\d{2}-\d{2}$/.test(birthDateStr)) return false;
+  const birth = new Date(birthDateStr + 'T12:00:00');
+  const today = new Date();
+  let months = (today.getFullYear() - birth.getFullYear()) * 12 + (today.getMonth() - birth.getMonth());
+  if (today.getDate() < birth.getDate()) months--;
+  return months < MIN_AGE_MONTHS;
+}
+
+/* ─── פופאפ: גיל הלווה מתחת ל־17 ו־10 חודשים – דורש אישור מיוחד ─── */
+function UnderAgeApprovalPopup({
+  isOpen,
+  onClose,
+  onProceed,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  onProceed: () => void;
+}) {
+  if (!isOpen) return null;
+  return (
+    <div
+      className="fixed inset-0 z-[110] flex items-center justify-center"
+      style={{ backgroundColor: 'rgba(0, 2, 4, 0.45)', backdropFilter: 'blur(6px)' }}
+      onClick={onClose}
+      dir="rtl"
+    >
+      <div
+        className="relative flex flex-col"
+        style={{
+          width: 'min(1100px, 92vw)',
+          height: 'min(900px, 90vh)',
+          background: 'linear-gradient(180deg, #F7F8FA 0%, #F7F8FA 100%)',
+          borderRadius: '12px',
+          border: '1px solid #E5E9F9',
+          boxShadow: '0 0 12px rgba(24, 47, 67, 0.08), 0 32px 64px -16px rgba(23, 37, 84, 0.18)',
+          overflow: 'hidden',
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div
+          className="flex items-center justify-between shrink-0"
+          style={{
+            padding: '20px 32px',
+            borderBottom: '1px solid #E5E9F9',
+          }}
+        >
+          <div style={{ width: '36px' }} />
+          <h2
+            style={{
+              fontSize: '20px',
+              fontWeight: 'var(--font-weight-bold)',
+              color: '#141E44',
+              lineHeight: '1.3',
+              textAlign: 'center',
+            }}
+          >
+            גיל הלווה דורש אישור מיוחד
+          </h2>
+          <button
+            onClick={onClose}
+            className="flex items-center justify-center w-9 h-9 rounded-lg transition-colors hover:bg-[rgba(0,0,0,0.04)]"
+            style={{ border: 'none', cursor: 'pointer', backgroundColor: 'transparent' }}
+            aria-label="סגור"
+          >
+            <X size={20} style={{ color: '#495157' }} />
+          </button>
+        </div>
+
+        <div
+          className="flex-1 flex flex-col items-center justify-center overflow-y-auto"
+          style={{ padding: '32px 40px' }}
+        >
+          <div className="flex flex-col items-center text-center max-w-[560px]">
+            <div
+              className="flex items-center justify-center w-16 h-16 rounded-full shrink-0 mb-6"
+              style={{ background: 'rgba(23, 37, 84, 0.08)' }}
+            >
+              <AlertTriangle size={32} style={{ color: 'var(--primary)' }} strokeWidth={2} />
+            </div>
+            <h3
+              className="mb-4"
+              style={{
+                fontFamily: 'var(--font-family-base)',
+                fontSize: 'var(--text-2xl)',
+                fontWeight: 'var(--font-weight-bold)',
+                color: '#141E44',
+                lineHeight: 1.35,
+              }}
+            >
+              תאריך הלידה שנבחר מראה שהלווה צעיר מ־17 שנים ו־10 חודשים. בקשת הלוואה במצב זה דורשת אישור מיוחד.
+            </h3>
+            <p
+              className="mb-3"
+              style={{
+                fontFamily: 'var(--font-family-base)',
+                fontSize: 'var(--text-base)',
+                color: '#495157',
+                lineHeight: 1.6,
+              }}
+            >
+              בקשת הלוואה עבור לווה מתחת לגיל המינימלי מחייבת בדיקה ואישור מיוחד של הגמ״ח.
+            </p>
+            <p
+              className="mb-8"
+              style={{
+                fontFamily: 'var(--font-family-base)',
+                fontSize: 'var(--text-base)',
+                color: '#495157',
+                lineHeight: 1.6,
+              }}
+            >
+              המשך התהליך תלוי באישור הגמ״ח ועשוי להאריך משמעותית את זמן הטיפול בבקשה.
+            </p>
+          </div>
+        </div>
+
+        <div
+          className="flex flex-row-reverse justify-center gap-3 shrink-0"
+          style={{
+            padding: '20px 32px 24px',
+            borderTop: '1px solid #E5E9F9',
+          }}
+        >
+          <button
+            type="button"
+            onClick={onProceed}
+            className="px-6 py-3 rounded-lg font-semibold transition-colors hover:opacity-95"
+            style={{
+              fontFamily: 'var(--font-family-base)',
+              fontSize: 'var(--text-sm)',
+              backgroundColor: 'var(--primary)',
+              color: '#fff',
+              border: 'none',
+              cursor: 'pointer',
+              borderRadius: 'var(--radius-button)',
+            }}
+          >
+            הבנתי, ואני רוצה להמשיך
+          </button>
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-6 py-3 rounded-lg font-medium transition-colors border hover:bg-[rgba(0,0,0,0.02)]"
+            style={{
+              fontFamily: 'var(--font-family-base)',
+              fontSize: 'var(--text-sm)',
+              backgroundColor: '#fff',
+              color: '#141E44',
+              borderColor: 'var(--border)',
+              cursor: 'pointer',
+              borderRadius: 'var(--radius-button)',
+            }}
+          >
+            חזרה אחורה
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ─── Step 1: פרטי הלווה ─── */
 function Step1Form({
   step1,
@@ -796,6 +961,7 @@ function Step1Form({
 }) {
   const [showOtherBorrowerPopup, setShowOtherBorrowerPopup] = useState(false);
   const [otherBorrowerApproved, setOtherBorrowerApproved] = useState(false);
+  const [showUnderAgePopup, setShowUnderAgePopup] = useState(false);
 
   const handleFullNameChange = (v: string) => {
     const match = childrenForLoan.find((c) => c.name === v.trim());
@@ -818,12 +984,22 @@ function Step1Form({
     setOtherBorrowerApproved(true);
   };
 
+  const handleBirthDateChange = (v: string) => {
+    setStep1((p) => ({ ...p, birthDate: v }));
+    if (isUnderMinAge(v)) setShowUnderAgePopup(true);
+  };
+
   return (
     <>
       <OtherBorrowerApprovalPopup
         isOpen={showOtherBorrowerPopup}
         onClose={() => setShowOtherBorrowerPopup(false)}
         onProceed={handleOtherBorrowerProceed}
+      />
+      <UnderAgeApprovalPopup
+        isOpen={showUnderAgePopup}
+        onClose={() => setShowUnderAgePopup(false)}
+        onProceed={() => setShowUnderAgePopup(false)}
       />
       <h2
         style={{
@@ -862,7 +1038,7 @@ function Step1Form({
             label="תאריך לידה"
             type="date"
             value={step1.birthDate}
-            onChange={(v) => setStep1((p) => ({ ...p, birthDate: v }))}
+            onChange={handleBirthDateChange}
           />
         </div>
 
