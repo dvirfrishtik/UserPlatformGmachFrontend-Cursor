@@ -1356,6 +1356,7 @@ function WizardInput({
   type?: 'text' | 'date' | 'email';
   onFocus?: () => void;
 }) {
+  const isDate = type === 'date';
   return (
     <div className="w-full" dir="rtl">
       {label && (
@@ -1383,6 +1384,12 @@ function WizardInput({
         style={{
           fontFamily: 'var(--font-family-base)',
           color: 'var(--foreground)',
+          direction: 'rtl',
+          textAlign: 'right',
+          ...(isDate && {
+            paddingLeft: '2.75rem',
+            paddingRight: '0.75rem',
+          }),
         }}
       />
     </div>
