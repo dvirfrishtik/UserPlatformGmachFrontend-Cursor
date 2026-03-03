@@ -14,10 +14,10 @@ export function InitialLoanRequestIntro({ isOpen, onClose, onStartProcess }: Ini
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex flex-col overflow-y-auto"
+      className="fixed inset-0 z-[100] flex flex-col min-w-0 overflow-x-hidden overflow-y-auto"
       style={{ backgroundColor: '#FAFAFA', direction: 'rtl' }}
     >
-      <div className="flex-1 flex flex-col min-h-full w-full" dir="rtl" style={{ direction: 'rtl' }}>
+      <div className="flex-1 flex flex-col min-h-full w-full min-w-0" dir="rtl" style={{ direction: 'rtl' }}>
         {/* Header – רספונסיבי: מובייל מצומצם, דסקטופ מלא */}
         <header
           className="flex flex-row justify-between items-center shrink-0 px-4 py-3 min-h-[56px] md:min-h-[72px] md:px-[38px] md:py-4"
@@ -47,38 +47,36 @@ export function InitialLoanRequestIntro({ isOpen, onClose, onStartProcess }: Ini
           </button>
         </header>
 
-        {/* Main – ממורכז אנכית, גרסת מובייל + דסקטופ */}
+        {/* Main – ממורכז אנכית, מותאם מובייל */}
         <div
-          className="flex-1 flex items-center justify-center min-h-0 w-full overflow-auto"
+          className="flex-1 flex items-center justify-center min-h-0 w-full min-w-0 overflow-x-hidden overflow-y-auto"
           style={{ direction: 'rtl' }}
         >
           <div
-            className="flex flex-col md:flex-row items-center justify-center w-full flex-1 md:flex-initial gap-6 md:gap-[min(107px,8vw)] px-4 py-6 md:py-10 max-w-[1250px] mx-auto"
+            className="flex flex-col md:flex-row items-center justify-center w-full flex-1 md:flex-initial gap-5 sm:gap-6 md:gap-[min(107px,8vw)] px-4 py-5 sm:py-6 md:py-10 max-w-[1250px] mx-auto min-w-0"
             style={{
-              paddingLeft: 'clamp(16px, 4vw, 40px)',
-              paddingRight: 'clamp(16px, 4vw, 40px)',
+              paddingLeft: 'max(16px, env(safe-area-inset-left))',
+              paddingRight: 'max(16px, env(safe-area-inset-right))',
             }}
           >
-            {/* Content column – מובייל: מלמטה, דסקטופ: מימין */}
+            {/* Content column – מובייל: מתחת לאיור, דסקטופ: מימין; רוחב מלא במובייל */}
             <div
-              className="flex flex-col items-start w-full md:w-auto order-2 md:order-0 flex-1 md:flex-initial min-w-0"
+              className="flex flex-col items-start w-full md:w-auto order-2 md:order-0 flex-1 md:flex-initial min-w-0 max-w-full md:max-w-[min(617px,49%)]"
               style={{
-                maxWidth: 'min(617px, 49%)',
-                flex: '1 1 auto',
                 textAlign: 'right',
                 alignSelf: 'stretch',
                 alignItems: 'flex-start',
-                gap: 'clamp(24px, 5vw, 50px)',
+                gap: 'clamp(20px, 4vw, 50px)',
               }}
             >
-              {/* Title – תמיד שורה אחת, גודל רספונסיבי לרוחב המסך (לא נחתך) */}
+              {/* Title – במובייל עטיפה, גודל קריא */}
               <h1
-                className="text-right w-full whitespace-nowrap"
+                className="text-right w-full md:whitespace-nowrap"
                 style={{
                   fontFamily: 'SimplerPro',
                   fontWeight: 700,
-                  fontSize: 'clamp(12px, 2.8vw, 45px)',
-                  lineHeight: 1.2,
+                  fontSize: 'clamp(20px, 5vw, 45px)',
+                  lineHeight: 1.25,
                   textAlign: 'right',
                   color: '#172554',
                   margin: 0,
@@ -87,15 +85,15 @@ export function InitialLoanRequestIntro({ isOpen, onClose, onStartProcess }: Ini
                 תהליך בקשה ראשונית להלוואה
               </h1>
 
-            {/* Block: מה כולל התהליך? – מובייל: גופנים קטנים יותר */}
-            <div className="flex flex-col gap-3 md:gap-5 w-full" style={{ alignItems: 'flex-start' }}>
-              <div className="flex flex-col gap-1 w-full" style={{ alignItems: 'flex-start' }}>
+            {/* Block: מה כולל התהליך? */}
+            <div className="flex flex-col gap-3 md:gap-5 w-full min-w-0" style={{ alignItems: 'flex-start' }}>
+              <div className="flex flex-col gap-1.5 w-full min-w-0" style={{ alignItems: 'flex-start' }}>
                 <h2
-                  className="text-lg md:text-2xl font-semibold"
+                  className="text-base sm:text-lg md:text-2xl font-semibold w-full"
                   style={{
                     fontFamily: 'SimplerPro',
                     fontWeight: 600,
-                    lineHeight: '36px',
+                    lineHeight: 1.35,
                     textAlign: 'right',
                     color: '#172554',
                     margin: 0,
@@ -104,11 +102,11 @@ export function InitialLoanRequestIntro({ isOpen, onClose, onStartProcess }: Ini
                   מה כולל התהליך?
                 </h2>
                 <p
-                  className="text-sm md:text-base"
+                  className="text-sm md:text-base w-full min-w-0"
                   style={{
                     fontFamily: 'SimplerPro',
                     fontWeight: 400,
-                    lineHeight: '150%',
+                    lineHeight: 1.5,
                     textAlign: 'right',
                     color: '#141E44',
                     margin: 0,
@@ -117,18 +115,17 @@ export function InitialLoanRequestIntro({ isOpen, onClose, onStartProcess }: Ini
                   התהליך כולל בחירת יחידות למימוש, אימות פרטי הלווה, הגדרת מטרת ההלוואה, הוספת שני ערבים וחתימה דיגיטלית על המסמכים. לאחר השלמת הבקשה, היא תועבר לגמ״ח לבדיקה מקיפה שלנו.
                 </p>
               </div>
-              {/* Time badge – מובייל: קטן יותר */}
+              {/* Time badge */}
               <div
-                className="flex flex-row justify-center items-center gap-2 shrink-0 px-3 py-2 md:px-4 md:py-2"
+                className="flex flex-row justify-center items-center gap-1.5 shrink-0 px-2.5 py-1.5 md:px-3 md:py-2"
                 style={{
                   background: '#CCA559',
-                  borderRadius: '8px',
-                  minHeight: '32px',
+                  borderRadius: '6px',
                   flexDirection: 'row-reverse',
                 }}
               >
                 <span
-                  className="text-xs md:text-sm font-semibold"
+                  className="text-[11px] md:text-xs font-semibold"
                   style={{
                     fontFamily: 'SimplerPro',
                     fontWeight: 600,
@@ -139,18 +136,18 @@ export function InitialLoanRequestIntro({ isOpen, onClose, onStartProcess }: Ini
                 >
                   זמן תהליך משוער 15-20 דקות
                 </span>
-                <Clock size={18} strokeWidth={1.25} className="shrink-0 md:w-5 md:h-5 w-4 h-4" style={{ color: '#141E44' }} />
+                <Clock size={14} strokeWidth={1.25} className="shrink-0 md:w-4 md:h-4 w-3.5 h-3.5" style={{ color: '#141E44' }} />
               </div>
             </div>
 
             {/* Block: דברים שכדאי להכין */}
-            <div className="flex flex-col gap-1 w-full" style={{ alignItems: 'flex-start' }}>
+            <div className="flex flex-col gap-1 w-full min-w-0" style={{ alignItems: 'flex-start' }}>
               <h2
-                className="text-base md:text-xl font-semibold"
+                className="text-sm sm:text-base md:text-xl font-semibold w-full"
                 style={{
                   fontFamily: 'SimplerPro',
                   fontWeight: 600,
-                  lineHeight: '36px',
+                  lineHeight: 1.35,
                   textAlign: 'right',
                   color: '#172554',
                   margin: 0,
@@ -159,11 +156,11 @@ export function InitialLoanRequestIntro({ isOpen, onClose, onStartProcess }: Ini
                 דברים שכדאי להכין מראש
               </h2>
               <p
-                className="text-sm md:text-base"
+                className="text-sm md:text-base w-full min-w-0"
                 style={{
                   fontFamily: 'SimplerPro',
                   fontWeight: 400,
-                  lineHeight: '150%',
+                  lineHeight: 1.5,
                   textAlign: 'right',
                   color: '#141E44',
                   margin: 0,
@@ -175,26 +172,27 @@ export function InitialLoanRequestIntro({ isOpen, onClose, onStartProcess }: Ini
               </p>
             </div>
 
-            {/* Button – מובייל: full width, דסקטופ: 370px */}
+            {/* Button – מובייל: full width, גובה נוח למגע */}
             <button
               type="button"
               onClick={() => onStartProcess?.()}
-              className="w-full md:w-[370px] inline-flex flex-row justify-center items-center gap-2 shrink-0 transition-colors border-0 cursor-pointer hover:opacity-90 h-12 md:h-12 px-6 py-3 rounded-lg text-base font-semibold"
+              className="w-full md:w-[370px] inline-flex flex-row justify-center items-center gap-2 shrink-0 transition-colors border-0 cursor-pointer hover:opacity-90 min-h-[48px] h-12 px-6 py-3 rounded-lg text-sm sm:text-base font-semibold"
               style={{
                 background: '#172554',
                 flexDirection: 'row-reverse',
+                color: '#FFFFFF',
               }}
             >
-              <ChevronLeft size={24} strokeWidth={2} className="shrink-0 w-6 h-6" style={{ color: '#FFFFFF' }} />
+              <ChevronLeft size={22} strokeWidth={2} className="shrink-0 w-5 h-5 sm:w-6 sm:h-6" style={{ color: '#FFFFFF' }} />
               <span style={{ fontFamily: 'SimplerPro', fontWeight: 600, lineHeight: '100%', textAlign: 'right', color: '#FFFFFF' }}>
                 להתחלת התהליך
               </span>
             </button>
           </div>
 
-            {/* Illustration – מובייל: קטן יותר, דסקטופ: 515 */}
+            {/* Illustration – מובייל: גודל נוח, דסקטופ: 515 */}
             <div
-              className="flex-none flex items-center justify-center order-1 md:order-1 w-[min(260px,75vw)] h-[min(260px,75vw)] md:w-[min(515px,40vw)] md:h-[min(515px,40vw)] max-w-full"
+              className="flex-none flex items-center justify-center order-1 md:order-1 w-[min(220px,70vw)] h-[min(220px,70vw)] sm:w-[min(260px,75vw)] sm:h-[min(260px,75vw)] md:w-[min(515px,40vw)] md:h-[min(515px,40vw)] max-w-full min-w-0"
               style={{
                 filter: 'drop-shadow(9.53704px 7.80303px 43.3502px rgba(33, 132, 213, 0.1))',
               }}

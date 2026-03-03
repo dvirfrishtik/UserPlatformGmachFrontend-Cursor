@@ -256,7 +256,7 @@ export function LoanApplicationWizard({ isOpen, onClose, onExitAndSave, onSubmit
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex flex-col"
+      className="fixed inset-0 z-[100] flex flex-col min-w-0 overflow-x-hidden"
       style={{ backgroundColor: '#FAFAFA', direction: 'rtl' }}
       dir="rtl"
     >
@@ -297,7 +297,7 @@ export function LoanApplicationWizard({ isOpen, onClose, onExitAndSave, onSubmit
       {/* ─── Body: sidebar נמשך עד למטה, תוכן + פוטר לצידו (או מסך הצלחה) ─── */}
       <div className="flex-1 flex min-h-0 overflow-hidden">
         {showSuccessScreen ? (
-          <div className="flex-1 flex flex-col items-center justify-center min-h-0 overflow-y-auto py-12 px-6">
+          <div className="flex-1 flex flex-col items-center justify-center min-h-0 overflow-x-hidden overflow-y-auto py-8 px-4 sm:py-12 sm:px-6">
             <LoanWizardSuccessScreen contactEmail={step4.borrowerEmail} onClose={onClose} />
           </div>
         ) : (
@@ -385,10 +385,10 @@ export function LoanApplicationWizard({ isOpen, onClose, onExitAndSave, onSubmit
           <div className="flex-1 flex min-w-0 min-h-0 overflow-hidden relative">
             {/* Center – Form: כשתפריט המידע גלוי, האזור = בדיוק בין תפריט המידע (280+24) לוויזארד – בלי padding ימין כדי שהמרכז יהיה מדויק */}
             <div
-              className={`flex-1 min-w-0 overflow-y-auto py-8 px-6 md:px-12 flex flex-col items-center ${currentStep >= 1 && currentStep <= 3 ? 'lg:pl-[304px] lg:pr-0' : 'lg:px-16'}`}
+              className={`flex-1 min-w-0 overflow-x-hidden overflow-y-auto py-6 px-4 sm:py-8 sm:px-6 md:px-12 flex flex-col items-center ${currentStep >= 1 && currentStep <= 3 ? 'lg:pl-[304px] lg:pr-0' : 'lg:px-16'}`}
             >
               {/* Mobile step indicator */}
-              <div className="md:hidden flex flex-row items-center gap-2 mb-5 w-full" style={{ justifyContent: 'flex-end' }}>
+              <div className="md:hidden flex flex-row items-center gap-2 mb-4 w-full max-w-full" style={{ justifyContent: 'flex-end' }}>
                 <span style={{ fontFamily: 'SimplerPro', fontSize: '12px', color: '#9CA3AF' }}>
                   שלב {currentStep} מתוך 5
                 </span>
@@ -397,7 +397,7 @@ export function LoanApplicationWizard({ isOpen, onClose, onExitAndSave, onSubmit
                 </span>
               </div>
 
-              <div key={currentStep} className="wizard-step-enter w-full flex flex-col">
+              <div key={currentStep} className="wizard-step-enter w-full max-w-full flex flex-col min-w-0">
                 {currentStep === 1 && (
                   <Step1Form step1={step1} setStep1={setStep1} childrenForLoan={childrenForLoan} />
                 )}
@@ -439,22 +439,21 @@ export function LoanApplicationWizard({ isOpen, onClose, onExitAndSave, onSubmit
             )}
           </div>
 
-          {/* ─── Footer – בתוך אזור התוכן, לא חוצה את ה-sidebar ─── */}
+          {/* ─── Footer – בתוך אזור התוכן, מותאם מובייל ─── */}
           <footer
-            className="flex flex-row items-center justify-between shrink-0 px-6 md:px-10 py-4"
+            className="flex flex-row flex-wrap items-center justify-between gap-3 shrink-0 px-4 py-3 sm:px-6 sm:py-4 md:px-10"
             style={{
               background: 'var(--card)',
               borderTop: '1px solid var(--border)',
-              minHeight: '72px',
+              minHeight: '64px',
             }}
           >
             <button
               type="button"
               onClick={handleBack}
-              className="inline-flex items-center justify-center h-11 px-6 rounded-lg font-semibold cursor-pointer transition-all hover:bg-[rgba(0,0,0,0.03)]"
+              className="inline-flex items-center justify-center min-h-[44px] h-11 px-4 sm:px-6 rounded-lg font-semibold cursor-pointer transition-all hover:bg-[rgba(0,0,0,0.03)] text-sm sm:text-base"
               style={{
                 fontFamily: 'SimplerPro',
-                fontSize: 'var(--text-base)',
                 color: 'var(--primary)',
                 background: 'transparent',
                 border: '1.5px solid var(--primary)',
@@ -466,10 +465,9 @@ export function LoanApplicationWizard({ isOpen, onClose, onExitAndSave, onSubmit
             <button
               type="button"
               onClick={currentStep === 5 ? handleSubmitRequest : handleContinue}
-              className="inline-flex items-center justify-center h-11 px-8 rounded-lg font-semibold border-0 cursor-pointer transition-opacity hover:opacity-90"
+              className="inline-flex items-center justify-center min-h-[44px] h-11 px-5 sm:px-8 rounded-lg font-semibold border-0 cursor-pointer transition-opacity hover:opacity-90 text-sm sm:text-base"
               style={{
                 fontFamily: 'SimplerPro',
-                fontSize: 'var(--text-base)',
                 color: 'var(--primary-foreground)',
                 background: 'var(--primary)',
               }}
@@ -1205,7 +1203,7 @@ function Step1Form({
           פרטי הלווה
         </h2>
       </div>
-      <div className="flex flex-col gap-5 max-w-[720px] w-full">
+      <div className="flex flex-col gap-5 max-w-[720px] w-full min-w-0">
         {/* Row 1: שם מלא (עם דרופדאון ילדים) | ת.ז. | תאריך לידה */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <FullNameWithChildDropdown
@@ -1269,7 +1267,7 @@ function Step1Form({
           >
             מצב אישי של הלווה
           </label>
-          <div className="grid grid-cols-5 gap-0">
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-0">
             {MARITAL_OPTIONS.map((opt, i) => {
               const selected = step1.maritalStatus === opt.value;
               const isFirst = i === 0;
@@ -1279,7 +1277,7 @@ function Step1Form({
                   key={opt.value}
                   type="button"
                   onClick={() => setStep1((p) => ({ ...p, maritalStatus: opt.value }))}
-                  className="inline-flex items-center justify-center gap-2 h-11 cursor-pointer transition-all border"
+                  className="inline-flex items-center justify-center gap-2 min-h-[44px] h-11 cursor-pointer transition-all border"
                   style={{
                     fontFamily: 'var(--font-family-base)',
                     fontSize: 'var(--text-sm)',
@@ -1316,7 +1314,7 @@ function Step1Form({
         {/* ─── פרטי בת/בן זוג / מאורסת (מוצג כשנשוי או מאורס) ─── */}
         {(step1.maritalStatus === 'married' || step1.maritalStatus === 'engaged') && (
           <div
-            className="rounded-xl px-6 py-6 mt-2"
+            className="rounded-xl px-4 py-4 sm:px-6 sm:py-6 mt-2"
             style={{
               background: '#F1F5F9',
               border: '1px solid var(--border)',
@@ -1778,7 +1776,7 @@ function Step2Form({
           מטרת ההלוואה
         </h2>
       </div>
-      <div className="flex flex-col gap-5 max-w-[720px] w-full">
+      <div className="flex flex-col gap-5 max-w-[720px] w-full min-w-0">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {LOAN_PURPOSE_OPTIONS.map((opt) => {
             const selected = step2.loanPurpose === opt.value;
@@ -1837,7 +1835,7 @@ function Step2Form({
           יחידות תרומה עבורן תבוקש ההלוואה:
         </h2>
       </div>
-      <div className="flex flex-col gap-6 max-w-[720px] w-full">
+      <div className="flex flex-col gap-6 max-w-[720px] w-full min-w-0">
         {/* קבוצה 1 – יחידות שנתרמו עבור הלווה */}
         <div>
           <p
@@ -1938,7 +1936,7 @@ function Step2Form({
       {/* ─── Summary bar ─── */}
       {totalSelected > 0 && (
         <div
-          className="flex flex-row items-center justify-between max-w-[720px] w-full rounded-xl mt-6 px-5 py-3.5"
+          className="flex flex-row flex-wrap items-center justify-between gap-2 max-w-[720px] w-full min-w-0 rounded-xl mt-6 px-4 py-3 sm:px-5 sm:py-3.5"
           dir="rtl"
           style={{
             background: '#FFFFFF',
@@ -2173,7 +2171,7 @@ function Step3Form({
           הגדרת ערבים
         </h2>
       </div>
-      <div className="flex flex-col gap-3 max-w-[720px] w-full">
+      <div className="flex flex-col gap-3 max-w-[720px] w-full min-w-0">
         {guarantors.map((g, i) => {
           const isOpen = openIndex === i;
           const displayName = getDisplayName(g);
@@ -2396,9 +2394,9 @@ function Step4Form({
           יש לבחור את הגורם עמו ניתן ליצור קשר:
         </p>
       </div>
-      <div dir="rtl" className="flex flex-col max-w-[720px] w-full">
-      {/* Contact method options – each rounded and separate */}
-      <div className="grid grid-cols-2 gap-3 mb-6">
+      <div dir="rtl" className="flex flex-col max-w-[720px] w-full min-w-0">
+      {/* Contact method options – responsive: 1 col on narrow, 2 on wider */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
         {CONTACT_METHOD_OPTIONS.map((opt) => {
           const selected = step4.contactMethod === opt.value;
           return (
@@ -2526,7 +2524,7 @@ function Step5Form({
           סיכום הבקשה להלוואה
         </h2>
       </div>
-    <div dir="rtl" className="flex flex-col max-w-[720px] w-full gap-6">
+    <div dir="rtl" className="flex flex-col max-w-[720px] w-full min-w-0 gap-6">
       {/* 3 summary cards – RTL: סכום ההלוואה | סכום זכאות למענק | עבור מס' יחידות תרומה */}
       <div className="flex flex-row gap-4 flex-wrap">
         <div style={cardStyle}>
