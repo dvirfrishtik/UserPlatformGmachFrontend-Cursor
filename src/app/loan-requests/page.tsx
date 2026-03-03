@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { ChevronLeft } from 'lucide-react';
 import { InitialLoanRequestIntro } from '@/components/InitialLoanRequestIntro';
+import { LoanApplicationWizard } from '@/components/LoanApplicationWizard';
 
 // Mock: whether user has units ready for loan realization (could come from API)
 const hasUnitsReadyForLoan = true;
@@ -11,6 +12,7 @@ const inProgressCount = 0;
 
 export default function LoanRequestsPage() {
   const [isIntroOpen, setIsIntroOpen] = useState(false);
+  const [isWizardOpen, setIsWizardOpen] = useState(false);
 
   return (
     <div className="w-full min-w-0 overflow-x-hidden" dir="rtl">
@@ -148,8 +150,13 @@ export default function LoanRequestsPage() {
         onClose={() => setIsIntroOpen(false)}
         onStartProcess={() => {
           setIsIntroOpen(false);
-          // TODO: open actual loan application wizard
+          setIsWizardOpen(true);
         }}
+      />
+      <LoanApplicationWizard
+        isOpen={isWizardOpen}
+        onClose={() => setIsWizardOpen(false)}
+        onExitAndSave={() => setIsWizardOpen(false)}
       />
     </div>
   );
