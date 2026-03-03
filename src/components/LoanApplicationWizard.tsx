@@ -172,10 +172,23 @@ const emptyStep4: LoanWizardStep4Data = {
   borrowerEmail: '',
 };
 
+export interface LoanWizardStep5Data {
+  termsAccepted: boolean;
+}
+
+const emptyStep5: LoanWizardStep5Data = {
+  termsAccepted: false,
+};
+
+/** סכום זכאות למענק – לדוגמה (ניתן לחישוב לפי כללים) */
+const DEFAULT_GRANT_ELIGIBILITY = 6000;
+
 interface LoanApplicationWizardProps {
   isOpen: boolean;
   onClose: () => void;
   onExitAndSave?: () => void;
+  /** נקרא בשלב 5 בלחיצה על "שליחת בקשה" */
+  onSubmit?: () => void;
   /** רשימת ילדים + יחידות למימוש (מתאימה לדף יחידות תרומה). אם לא מועבר – משתמשים ברשימה ברירת מחדל. */
   childrenForLoan?: ChildForLoan[];
 }
@@ -196,13 +209,14 @@ const emptyStep1: LoanWizardStep1Data = {
   spouseEmail: '',
 };
 
-export function LoanApplicationWizard({ isOpen, onClose, onExitAndSave, childrenForLoan = DEFAULT_CHILDREN_FOR_LOAN }: LoanApplicationWizardProps) {
+export function LoanApplicationWizard({ isOpen, onClose, onExitAndSave, onSubmit, childrenForLoan = DEFAULT_CHILDREN_FOR_LOAN }: LoanApplicationWizardProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [step1, setStep1] = useState<LoanWizardStep1Data>(emptyStep1);
   const [step2, setStep2] = useState<LoanWizardStep2Data>(emptyStep2);
   const [guarantors, setGuarantors] = useState<GuarantorData[]>(() => createEmptyGuarantors(5));
   const [step4, setStep4] = useState<LoanWizardStep4Data>(emptyStep4);
+  const [step5, setStep5] = useState<LoanWizardStep5Data>(emptyStep5);
 
   if (!isOpen) return null;
 
@@ -229,6 +243,11 @@ export function LoanApplicationWizard({ isOpen, onClose, onExitAndSave, children
 
   const handleExitAndSave = () => {
     onExitAndSave?.();
+    onClose();
+  };
+
+  const handleSubmitRequest = () => {
+    onSubmit?.();
     onClose();
   };
 
@@ -370,19 +389,14 @@ export function LoanApplicationWizard({ isOpen, onClose, onExitAndSave, children
                 {currentStep === 4 && (
                   <Step4Form step4={step4} setStep4={setStep4} />
                 )}
-                {currentStep > 4 && (
-                  <div
-                    className="flex-1 flex items-center justify-center h-full"
-                    style={{ color: '#9CA3AF', fontFamily: 'SimplerPro' }}
-                  >
-                    שלב {currentStep} – בהמשך יוטמע
-                  </div>
+                {currentStep === 5 && (
+                  <Step5Form step1={step1} step2={step2} step5={step5} setStep5={setStep5} />
                 )}
               </div>
             </div>
 
-            {/* ── Info Panel – קופסה צפה דבוקה לשמאל (לא מוצג בשלב פרטי התקשרות) ── */}
-            {currentStep !== 4 && (
+            {/* ── Info Panel – קופסה צפה דבוקה לשמאל (לא מוצג בשלבים 4 ו-5) ── */}
+            {currentStep !== 4 && currentStep !== 5 && (
               <div
                 className="hidden lg:block absolute top-8 bottom-8"
                 style={{ left: 24 }}
@@ -399,7 +413,6 @@ export function LoanApplicationWizard({ isOpen, onClose, onExitAndSave, children
                   {currentStep === 1 && <Step1InfoPanelContent />}
                   {currentStep === 2 && <Step2InfoPanelContent />}
                   {currentStep === 3 && <Step3InfoPanelContent />}
-                  {currentStep > 4 && <Step1InfoPanelContent />}
                 </div>
               </div>
             )}
@@ -431,7 +444,7 @@ export function LoanApplicationWizard({ isOpen, onClose, onExitAndSave, children
 
             <button
               type="button"
-              onClick={handleContinue}
+              onClick={currentStep === 5 ? handleSubmitRequest : handleContinue}
               className="inline-flex items-center justify-center h-11 px-8 rounded-lg font-semibold border-0 cursor-pointer transition-opacity hover:opacity-90"
               style={{
                 fontFamily: 'SimplerPro',
@@ -440,7 +453,7 @@ export function LoanApplicationWizard({ isOpen, onClose, onExitAndSave, children
                 background: 'var(--primary)',
               }}
             >
-              המשך לשלב הבא
+              {currentStep === 5 ? 'שליחת בקשה' : 'המשך לשלב הבא'}
             </button>
           </footer>
         </div>
@@ -2059,6 +2072,156 @@ function Step4Form({
           color: 'var(--foreground)',
         }}
       />
+    </div>
+  );
+}
+
+/* ─── Step 5: סיכום והגשה ─── */
+function Step5Form({
+  step1,
+  step2,
+  step5,
+  setStep5,
+}: {
+  step1: LoanWizardStep1Data;
+  step2: LoanWizardStep2Data;
+  step5: LoanWizardStep5Data;
+  setStep5: React.Dispatch<React.SetStateAction<LoanWizardStep5Data>>;
+}) {
+  const totalUnits = step2.selectedUnitIds.length;
+  const totalLoanAmount = DEFAULT_DONATION_UNITS
+    .filter((u) => step2.selectedUnitIds.includes(u.id))
+    .reduce((sum, u) => sum + u.loanEntitlement, 0);
+  const monthlyPayment = totalUnits > 0 ? Math.round(totalLoanAmount / 120) : 0;
+  const grantAmount = DEFAULT_GRANT_ELIGIBILITY;
+
+  const cardStyle = {
+    background: '#F1F5F9',
+    border: '1px solid #E2E8F0',
+    borderRadius: '12px',
+    padding: '16px 20px',
+    flex: '1 1 0',
+    minWidth: 0,
+  };
+  const labelStyle = {
+    fontFamily: 'var(--font-family-base)' as const,
+    fontSize: '13px',
+    fontWeight: 500,
+    color: 'var(--muted-foreground)',
+    textAlign: 'right' as const,
+    marginBottom: 4,
+  };
+  const valueStyle = {
+    fontFamily: 'var(--font-family-base)' as const,
+    fontSize: '18px',
+    fontWeight: 700,
+    color: 'var(--primary)',
+    textAlign: 'right' as const,
+  };
+
+  return (
+    <div dir="rtl" className="flex flex-col max-w-[720px] w-full gap-6">
+      <h2
+        style={{
+          fontFamily: 'var(--font-family-base)',
+          fontWeight: 'var(--font-weight-bold)',
+          fontSize: 'var(--text-xl)',
+          color: 'var(--primary)',
+          lineHeight: 1.3,
+          textAlign: 'right',
+          marginBottom: 8,
+        }}
+      >
+        סיכום הבקשה להלוואה
+      </h2>
+
+      {/* 3 summary cards – RTL: סכום ההלוואה | סכום זכאות למענק | עבור מס' יחידות תרומה */}
+      <div className="flex flex-row gap-4 flex-wrap">
+        <div style={cardStyle}>
+          <div style={labelStyle}>סכום ההלוואה</div>
+          <div style={valueStyle}>₪{totalLoanAmount.toLocaleString('he-IL')}</div>
+        </div>
+        <div style={cardStyle}>
+          <div style={labelStyle}>סכום זכאות למענק</div>
+          <div style={valueStyle}>₪{grantAmount.toLocaleString('he-IL')}</div>
+        </div>
+        <div style={cardStyle}>
+          <div style={labelStyle}>עבור מס׳ יחידות תרומה</div>
+          <div style={valueStyle}>{totalUnits} יחידות</div>
+        </div>
+      </div>
+
+      {/* החזר חודשי צפוי + כפתור פירוט */}
+      <div
+        className="rounded-xl w-full flex flex-col gap-3"
+        style={{
+          background: '#F1F5F9',
+          border: '1px solid #E2E8F0',
+          padding: '20px',
+        }}
+      >
+        <div className="flex flex-row items-center gap-2" style={{ justifyContent: 'flex-end' }}>
+          <span
+            style={{
+              fontFamily: 'var(--font-family-base)',
+              fontSize: 'var(--text-base)',
+              fontWeight: 600,
+              color: 'var(--foreground)',
+            }}
+          >
+            החזר חודשי צפוי: ~₪{monthlyPayment.toLocaleString('he-IL')}
+          </span>
+          <Info size={18} style={{ color: 'var(--muted-foreground)', flexShrink: 0 }} aria-hidden />
+        </div>
+        <button
+          type="button"
+          className="rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-[rgba(0,0,0,0.04)]"
+          style={{ alignSelf: 'flex-start' }}
+          style={{
+            fontFamily: 'var(--font-family-base)',
+            color: 'var(--muted-foreground)',
+            background: '#F8FAFC',
+            borderColor: 'var(--border)',
+          }}
+        >
+          הצגת פירוט תשלומים צפוי
+        </button>
+      </div>
+
+      {/* תנאים ואישור */}
+      <div
+        className="rounded-xl w-full flex flex-row-reverse items-start gap-3 cursor-pointer"
+        style={{
+          background: '#F1F5F9',
+          border: '1px solid #E2E8F0',
+          padding: '16px 20px',
+        }}
+        onClick={() => setStep5((p) => ({ ...p, termsAccepted: !p.termsAccepted }))}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => e.key === 'Enter' && setStep5((p) => ({ ...p, termsAccepted: !p.termsAccepted }))}
+      >
+        <label
+          className="flex-1 text-right cursor-pointer"
+          style={{
+            fontFamily: 'var(--font-family-base)',
+            fontSize: 'var(--text-sm)',
+            color: 'var(--foreground)',
+            lineHeight: 1.5,
+          }}
+        >
+          אני מאשר שקראתי והבנתי את התנאים המשפטיים להגשת בקשה ראשונית להלוואה דרך הגמ"ח המרכזי
+        </label>
+        <input
+          type="checkbox"
+          checked={step5.termsAccepted}
+          onChange={(e) => setStep5((p) => ({ ...p, termsAccepted: e.target.checked }))}
+          onClick={(e) => e.stopPropagation()}
+          className="rounded border-border shrink-0 w-5 h-5"
+          style={{ accentColor: 'var(--primary)' }}
+          aria-label="אישור תנאים"
+        />
+      </div>
     </div>
   );
 }
