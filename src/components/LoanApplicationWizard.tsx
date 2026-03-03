@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
-import { X, ChevronDown, ChevronLeft, AlertTriangle, Info, Check, ExternalLink, User, CheckCircle2 } from 'lucide-react';
+import { X, ChevronDown, ChevronLeft, AlertTriangle, Info, Check, ExternalLink, User, Minus } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 
 const MARITAL_OPTIONS = [
@@ -155,6 +155,23 @@ function createEmptyGuarantors(count: number): GuarantorData[] {
   return Array.from({ length: count }, () => ({ ...emptyGuarantor }));
 }
 
+export interface LoanWizardStep4Data {
+  contactMethod: 'borrower_email' | 'donor_email' | 'borrower_fax' | 'other';
+  borrowerEmail: string;
+}
+
+const CONTACT_METHOD_OPTIONS: { value: LoanWizardStep4Data['contactMethod']; label: string }[] = [
+  { value: 'borrower_email', label: 'למייל של הלווה' },
+  { value: 'donor_email', label: 'למייל של התורם' },
+  { value: 'borrower_fax', label: 'לפקס של הלווה' },
+  { value: 'other', label: 'אחר' },
+];
+
+const emptyStep4: LoanWizardStep4Data = {
+  contactMethod: 'borrower_email',
+  borrowerEmail: '',
+};
+
 interface LoanApplicationWizardProps {
   isOpen: boolean;
   onClose: () => void;
@@ -185,6 +202,7 @@ export function LoanApplicationWizard({ isOpen, onClose, onExitAndSave, children
   const [step1, setStep1] = useState<LoanWizardStep1Data>(emptyStep1);
   const [step2, setStep2] = useState<LoanWizardStep2Data>(emptyStep2);
   const [guarantors, setGuarantors] = useState<GuarantorData[]>(() => createEmptyGuarantors(5));
+  const [step4, setStep4] = useState<LoanWizardStep4Data>(emptyStep4);
 
   if (!isOpen) return null;
 
@@ -339,7 +357,10 @@ export function LoanApplicationWizard({ isOpen, onClose, onExitAndSave, children
               {currentStep === 3 && (
                 <Step3Form guarantors={guarantors} setGuarantors={setGuarantors} />
               )}
-              {currentStep > 3 && (
+              {currentStep === 4 && (
+                <Step4Form step4={step4} setStep4={setStep4} />
+              )}
+              {currentStep > 4 && (
                 <div
                   className="flex-1 flex items-center justify-center h-full"
                   style={{ color: '#9CA3AF', fontFamily: 'SimplerPro' }}
@@ -366,7 +387,8 @@ export function LoanApplicationWizard({ isOpen, onClose, onExitAndSave, children
                 {currentStep === 1 && <Step1InfoPanelContent />}
                 {currentStep === 2 && <Step2InfoPanelContent />}
                 {currentStep === 3 && <Step3InfoPanelContent />}
-                {currentStep > 3 && <Step1InfoPanelContent />}
+                {currentStep === 4 && <Step4InfoPanelContent />}
+                {currentStep > 4 && <Step1InfoPanelContent />}
               </div>
             </div>
           </div>
@@ -1025,7 +1047,7 @@ function FullNameWithChildDropdown({
         onFocus={handleFocus}
         placeholder={placeholder}
         dir="rtl"
-        className="w-full h-9 rounded-md border border-border bg-input-background text-right px-3 text-sm"
+        className="w-full h-9 rounded-md border border-border bg-input-background text-right px-3 text-sm placeholder:text-[#9CA3AF]"
         style={{
           fontFamily: 'var(--font-family-base)',
           color: 'var(--foreground)',
@@ -1109,7 +1131,7 @@ function WizardInput({
         onFocus={onFocus}
         placeholder={placeholder}
         dir="rtl"
-        className="w-full h-9 rounded-md border border-border bg-input-background text-right px-3 text-sm"
+        className="w-full h-9 rounded-md border border-border bg-input-background text-right px-3 text-sm placeholder:text-[#9CA3AF]"
         style={{
           fontFamily: 'var(--font-family-base)',
           color: 'var(--foreground)',
@@ -1683,6 +1705,7 @@ function Step3Form({
 }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const requiredCount = 5;
+  const isExtraGuarantor = (index: number) => index >= requiredCount;
 
   const updateGuarantor = (index: number, field: keyof GuarantorData, value: string | boolean) => {
     setGuarantors((prev) => {
@@ -1711,6 +1734,19 @@ function Step3Form({
     return name || '';
   };
 
+  const handleAddGuarantor = () => {
+    setGuarantors((prev) => [...prev, { ...emptyGuarantor }]);
+    setOpenIndex(guarantors.length);
+  };
+
+  const handleRemoveGuarantor = (index: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (guarantors.length <= requiredCount) return;
+    setGuarantors((prev) => prev.filter((_, j) => j !== index));
+    if (openIndex === index) setOpenIndex(null);
+    else if (openIndex !== null && openIndex > index) setOpenIndex(openIndex - 1);
+  };
+
   return (
     <>
       <h2
@@ -1737,39 +1773,47 @@ function Step3Form({
               key={i}
               className="rounded-xl overflow-hidden transition-all"
               style={{
-                border: isOpen ? '2px solid var(--primary)' : '1.5px solid #E5E9F9',
+                border: isOpen ? '1.5px solid rgba(23, 37, 84, 0.4)' : '1.5px solid #E5E9F9',
                 background: isOpen ? '#FFFFFF' : g.isSaved ? '#FFFFFF' : '#F3F4F6',
               }}
               dir="rtl"
             >
-              {/* Header */}
-              <button
-                type="button"
-                onClick={() => setOpenIndex(isOpen ? null : i)}
-                className="flex flex-row items-center justify-between w-full px-5 py-3.5 cursor-pointer transition-colors hover:bg-[rgba(0,0,0,0.02)]"
-                style={{ background: 'transparent', border: 'none' }}
-              >
-                <div className="flex flex-row items-center gap-3">
-                  {g.isSaved && displayName ? (
-                    <CheckCircle2 size={20} style={{ color: 'var(--primary)', flexShrink: 0 }} />
-                  ) : (
-                    <User size={18} style={{ color: '#9CA3AF', flexShrink: 0 }} />
-                  )}
-                  <span
-                    style={{
-                      fontFamily: 'var(--font-family-base)',
-                      fontSize: 'var(--text-base)',
-                      fontWeight: g.isSaved ? 600 : 400,
-                      color: g.isSaved ? '#172554' : '#6B7280',
-                    }}
+              {/* Header – RTL: מינוס בצד ימין, אז בתוך ה-DOM מינוס ראשון (יופיע ימין) */}
+              <div className="flex flex-row items-center w-full px-5 py-3.5 gap-2" dir="rtl">
+                {isExtraGuarantor(i) && (
+                  <button
+                    type="button"
+                    onClick={(e) => handleRemoveGuarantor(i, e)}
+                    className="flex items-center justify-center w-9 h-9 rounded-lg shrink-0 transition-colors hover:bg-[rgba(0,0,0,0.06)]"
+                    style={{ border: 'none', background: 'transparent', cursor: 'pointer' }}
+                    aria-label="הסרת ערב"
                   >
-                    {g.isSaved && displayName ? displayName : `ערב ${i + 1}#`}
-                  </span>
-                </div>
-                <div className="flex flex-row items-center gap-2">
-                  <span style={{ fontFamily: 'var(--font-family-base)', fontSize: '13px', color: '#9CA3AF' }}>
-                    {i + 1}.
-                  </span>
+                    <Minus size={18} style={{ color: '#6B7280' }} />
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setOpenIndex(isOpen ? null : i)}
+                  className="flex flex-row items-center justify-between flex-1 min-w-0 cursor-pointer transition-colors hover:bg-[rgba(0,0,0,0.02)] -mx-2 px-2 py-1 rounded-lg"
+                  style={{ background: 'transparent', border: 'none' }}
+                >
+                  <div className="flex flex-row items-center gap-3">
+                    {g.isSaved && displayName ? (
+                      <Image src="/icons/checkmark-circle-01.svg" alt="" width={24} height={24} unoptimized className="shrink-0" />
+                    ) : (
+                      <User size={18} style={{ color: '#9CA3AF', flexShrink: 0 }} />
+                    )}
+                    <span
+                      style={{
+                        fontFamily: 'var(--font-family-base)',
+                        fontSize: 'var(--text-base)',
+                        fontWeight: g.isSaved ? 600 : 400,
+                        color: g.isSaved ? '#172554' : '#6B7280',
+                      }}
+                    >
+                      {g.isSaved && displayName ? displayName : `ערב #${i + 1}`}
+                    </span>
+                  </div>
                   <ChevronDown
                     size={18}
                     style={{
@@ -1778,8 +1822,8 @@ function Step3Form({
                       transition: 'transform 0.2s',
                     }}
                   />
-                </div>
-              </button>
+                </button>
+              </div>
 
               {/* Form content */}
               {isOpen && (
@@ -1847,8 +1891,179 @@ function Step3Form({
             </div>
           );
         })}
+        <button
+          type="button"
+          onClick={handleAddGuarantor}
+          className="flex flex-row-reverse items-center justify-center gap-2 rounded-xl border border-dashed px-4 py-3 w-full max-w-[720px] transition-colors hover:bg-[rgba(0,0,0,0.02)]"
+          dir="rtl"
+          style={{
+            fontFamily: 'var(--font-family-base)',
+            fontSize: 'var(--text-sm)',
+            fontWeight: 500,
+            color: '#6B7280',
+            borderColor: '#D1D5DB',
+            background: 'transparent',
+            cursor: 'pointer',
+          }}
+        >
+          <span>הוספת ערב נוסף</span>
+          <span style={{ fontSize: '18px', lineHeight: 1, color: '#9CA3AF' }}>+</span>
+        </button>
       </div>
     </>
+  );
+}
+
+/* ─── Info Panel תוכן – שלב 4 ─── */
+function Step4InfoPanelContent() {
+  return (
+    <>
+      <div
+        className="flex flex-row items-center gap-2 px-5 py-3 shrink-0"
+        style={{ borderBottom: '1px solid #E5E9F9' }}
+      >
+        <Image src="/icons/lamp.svg" alt="" width={20} height={20} unoptimized className="shrink-0" />
+        <span style={{ fontFamily: 'SimplerPro', fontWeight: 700, fontSize: '15px', color: '#172554' }}>
+          מידע נוסף – פרטי התקשרות
+        </span>
+      </div>
+      <div className="px-5 py-4 flex-1 overflow-y-auto min-h-0" style={{ background: '#F8FAFC' }}>
+        <div className="flex flex-col gap-2.5">
+          <InfoCard>
+            שטר ההלוואה יישלח אל הכתובת שתבחר. וודא שהפרטים מעודכנים כדי לקבל את המסמכים בהקדם.
+          </InfoCard>
+        </div>
+      </div>
+    </>
+  );
+}
+
+/* ─── Step 4: פרטי התקשרות ─── */
+function Step4Form({
+  step4,
+  setStep4,
+}: {
+  step4: LoanWizardStep4Data;
+  setStep4: React.Dispatch<React.SetStateAction<LoanWizardStep4Data>>;
+}) {
+  return (
+    <div dir="rtl" className="flex flex-col max-w-[720px] w-full">
+      <h2
+        style={{
+          fontFamily: 'var(--font-family-base)',
+          fontWeight: 'var(--font-weight-bold)',
+          fontSize: 'var(--text-xl)',
+          color: 'var(--primary)',
+          lineHeight: 1.3,
+          textAlign: 'right',
+          marginBottom: 8,
+        }}
+      >
+        פרטי התקשרות
+      </h2>
+      <p
+        style={{
+          fontFamily: 'var(--font-family-base)',
+          fontSize: 'var(--text-base)',
+          color: 'var(--foreground)',
+          textAlign: 'right',
+          marginBottom: 4,
+        }}
+      >
+        למי לשלוח את שטר ההלוואה?
+      </p>
+      <p
+        style={{
+          fontFamily: 'var(--font-family-base)',
+          fontSize: 'var(--text-sm)',
+          color: 'var(--muted-foreground)',
+          textAlign: 'right',
+          marginBottom: 20,
+        }}
+      >
+        יש לבחור את הגורם עמו ניתן ליצור קשר:
+      </p>
+
+      {/* 2x2 grid – contact method options (RTL: row1 = borrower_email, donor_email; row2 = borrower_fax, other) */}
+      <div className="grid grid-cols-2 gap-3 mb-6">
+        {CONTACT_METHOD_OPTIONS.map((opt, i) => {
+          const selected = step4.contactMethod === opt.value;
+          const col = i % 2;
+          const row = Math.floor(i / 2);
+          const topRight = row === 0 && col === 0;
+          const topLeft = row === 0 && col === 1;
+          const bottomRight = row === 1 && col === 0;
+          const bottomLeft = row === 1 && col === 1;
+          const radiusRtl = topRight
+            ? '0 8px 0 0'
+            : topLeft
+            ? '8px 0 0 0'
+            : bottomRight
+            ? '0 0 8px 0'
+            : bottomLeft
+            ? '0 0 0 8px'
+            : '0';
+          return (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => setStep4((p) => ({ ...p, contactMethod: opt.value }))}
+              className="inline-flex flex-row-reverse items-center justify-center gap-2 h-12 cursor-pointer transition-all border w-full"
+              style={{
+                fontFamily: 'var(--font-family-base)',
+                fontSize: 'var(--text-sm)',
+                fontWeight: selected ? 'var(--font-weight-semibold)' : 'var(--font-weight-normal)',
+                color: selected ? 'var(--primary)' : 'var(--muted-foreground)',
+                background: selected ? '#EFF6FF' : 'var(--card)',
+                borderColor: selected ? 'var(--primary)' : 'var(--border)',
+                borderRadius: radiusRtl,
+                textAlign: 'right',
+              }}
+            >
+              <span
+                className="flex items-center justify-center w-[18px] h-[18px] rounded-full shrink-0"
+                style={{
+                  border: `2px solid ${selected ? 'var(--primary)' : 'var(--border)'}`,
+                }}
+              >
+                {selected && (
+                  <span
+                    className="w-2.5 h-2.5 rounded-full"
+                    style={{ background: 'var(--primary)' }}
+                  />
+                )}
+              </span>
+              {opt.label}
+            </button>
+          );
+        })}
+      </div>
+
+      <label
+        className="block mb-2"
+        style={{
+          fontFamily: 'var(--font-family-base)',
+          fontSize: 'var(--text-sm)',
+          fontWeight: 'var(--font-weight-normal)',
+          color: 'var(--muted-foreground)',
+          textAlign: 'right',
+        }}
+      >
+        כתובת אימייל של הלווה
+      </label>
+      <Input
+        type="email"
+        value={step4.borrowerEmail}
+        onChange={(e) => setStep4((p) => ({ ...p, borrowerEmail: e.target.value }))}
+        placeholder="הזן כתובת אימייל"
+        dir="rtl"
+        className="w-full h-9 rounded-md border border-border bg-input-background text-right px-3 text-sm placeholder:text-[#9CA3AF]"
+        style={{
+          fontFamily: 'var(--font-family-base)',
+          color: 'var(--foreground)',
+        }}
+      />
+    </div>
   );
 }
 
