@@ -331,6 +331,16 @@ export function LoanApplicationWizard({ isOpen, onClose, onExitAndSave, onSubmit
                       {String(step.id).padStart(2, '0')}
                     </button>
                     <span
+                      role={clickable ? 'button' : undefined}
+                      tabIndex={clickable ? 0 : undefined}
+                      onClick={() => clickable && setCurrentStep(step.id)}
+                      onKeyDown={(e) => {
+                        if (!clickable) return;
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          setCurrentStep(step.id);
+                        }
+                      }}
                       style={{
                         fontFamily: 'SimplerPro',
                         fontWeight: active ? 700 : 400,

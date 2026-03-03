@@ -71,13 +71,13 @@ export function InitialLoanRequestIntro({ isOpen, onClose, onStartProcess }: Ini
                 gap: 'clamp(24px, 5vw, 50px)',
               }}
             >
-              {/* Title – גודל רספונסיבי, מאפשר ירידת שורה כדי שלא ייחתך */}
+              {/* Title – תמיד שורה אחת, גודל רספונסיבי לרוחב המסך (לא נחתך) */}
               <h1
-                className="text-right w-full break-words"
+                className="text-right w-full whitespace-nowrap"
                 style={{
                   fontFamily: 'SimplerPro',
                   fontWeight: 700,
-                  fontSize: 'clamp(14px, 4.2vw, 45px)',
+                  fontSize: 'clamp(12px, 2.8vw, 45px)',
                   lineHeight: 1.2,
                   textAlign: 'right',
                   color: '#172554',
