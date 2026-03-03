@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
-import { X, ChevronDown, ChevronLeft, AlertTriangle, Info, Check, ExternalLink, User, Minus } from 'lucide-react';
+import { X, ChevronDown, ChevronLeft, AlertTriangle, Info, Check, ExternalLink, User, Minus, Calendar } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { LoanRepaymentTable } from '@/components/LoanRepaymentTable';
 
@@ -1357,6 +1357,7 @@ function WizardInput({
   onFocus?: () => void;
 }) {
   const isDate = type === 'date';
+  const dateInputRef = useRef<HTMLInputElement>(null);
   return (
     <div className="w-full" dir="rtl">
       {label && (
@@ -1373,25 +1374,52 @@ function WizardInput({
           {label}
         </label>
       )}
-      <Input
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onFocus={onFocus}
-        placeholder={placeholder}
-        dir="rtl"
-        className="w-full h-9 rounded-md border border-border bg-input-background text-right px-3 text-sm placeholder:text-[#9CA3AF]"
-        style={{
-          fontFamily: 'var(--font-family-base)',
-          color: 'var(--foreground)',
-          direction: 'rtl',
-          textAlign: 'right',
-          ...(isDate && {
-            paddingLeft: '2.75rem',
-            paddingRight: '0.75rem',
-          }),
-        }}
-      />
+      {isDate ? (
+        <div
+          className="flex flex-row items-center h-9 rounded-md border border-border bg-input-background overflow-hidden"
+          style={{ direction: 'rtl' }}
+        >
+          <input
+            ref={dateInputRef}
+            type="date"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            onFocus={onFocus}
+            dir="rtl"
+            className="wizard-date-input flex-1 min-w-0 h-full bg-transparent border-0 px-3 text-sm outline-none focus:ring-0"
+            style={{
+              fontFamily: 'var(--font-family-base)',
+              color: 'var(--foreground)',
+              textAlign: 'right',
+            }}
+          />
+          <button
+            type="button"
+            onClick={() => dateInputRef.current?.showPicker?.()}
+            className="flex items-center justify-center shrink-0 w-9 h-9 cursor-pointer border-0 bg-transparent"
+            style={{ color: 'var(--muted-foreground)' }}
+            aria-label="בחירת תאריך"
+          >
+            <Calendar size={18} strokeWidth={2} />
+          </button>
+        </div>
+      ) : (
+        <Input
+          type={type}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onFocus={onFocus}
+          placeholder={placeholder}
+          dir="rtl"
+          className="w-full h-9 rounded-md border border-border bg-input-background text-right px-3 text-sm placeholder:text-[#9CA3AF]"
+          style={{
+            fontFamily: 'var(--font-family-base)',
+            color: 'var(--foreground)',
+            direction: 'rtl',
+            textAlign: 'right',
+          }}
+        />
+      )}
     </div>
   );
 }

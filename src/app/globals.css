@@ -386,3 +386,13 @@ body[style*="overflow: hidden"] {
 .wizard-step-enter {
   animation: wizard-step-enter 0.35s ease-out forwards;
 }
+
+/* שדה תאריך בוויזארד – מסתיר אייקון היומן המובנה (אייקון מותאם מוצג בעטיפה) */
+.wizard-date-input::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
