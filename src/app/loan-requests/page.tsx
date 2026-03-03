@@ -54,6 +54,7 @@ export default function LoanRequestsPage() {
           type="button"
           onClick={() => setIsIntroOpen(true)}
           className="inline-flex items-center justify-center gap-2 shrink-0 transition-colors rounded-lg border-0 cursor-pointer"
+          dir="rtl"
           style={{
             height: '44px',
             padding: '0 24px',
@@ -61,7 +62,6 @@ export default function LoanRequestsPage() {
             fontWeight: 'var(--font-weight-semibold)',
             color: '#FFFFFF',
             backgroundColor: '#141E44',
-            flexDirection: 'row-reverse',
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.backgroundColor = '#0F1A3E';
