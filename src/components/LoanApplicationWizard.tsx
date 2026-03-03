@@ -396,7 +396,7 @@ export function LoanApplicationWizard({ isOpen, onClose, onExitAndSave, onSubmit
                 </span>
               </div>
 
-              <div key={currentStep} className="wizard-step-enter w-full flex flex-col items-center">
+              <div key={currentStep} className="wizard-step-enter w-full flex flex-col">
                 {currentStep === 1 && (
                   <Step1Form step1={step1} setStep1={setStep1} childrenForLoan={childrenForLoan} />
                 )}
@@ -1199,20 +1199,20 @@ function Step1Form({
         onClose={() => setShowUnderAgePopup(false)}
         onProceed={() => setShowUnderAgePopup(false)}
       />
-      <h2
-        style={{
-          fontFamily: 'var(--font-family-base)',
-          fontWeight: 'var(--font-weight-bold)',
-          fontSize: 'var(--text-xl)',
-          color: 'var(--primary)',
-          lineHeight: 1.3,
-          textAlign: 'right',
-          marginBottom: 32,
-        }}
-      >
-        פרטי הלווה
-      </h2>
-
+      <div className="w-full flex flex-col items-center">
+      <div className="w-full max-w-[720px] mb-8" style={{ textAlign: 'right' }}>
+        <h2
+          style={{
+            fontFamily: 'var(--font-family-base)',
+            fontWeight: 'var(--font-weight-bold)',
+            fontSize: 'var(--text-xl)',
+            color: 'var(--primary)',
+            lineHeight: 1.3,
+          }}
+        >
+          פרטי הלווה
+        </h2>
+      </div>
       <div className="flex flex-col gap-5 max-w-[720px] w-full">
         {/* Row 1: שם מלא (עם דרופדאון ילדים) | ת.ז. | תאריך לידה */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -1383,6 +1383,7 @@ function Step1Form({
             </div>
           </div>
         )}
+      </div>
       </div>
     </>
   );
@@ -1771,20 +1772,20 @@ function Step2Form({
         onProceed={handleUnitNotForBorrowerProceed}
       />
       {/* ─── מטרת ההלוואה ─── */}
-      <h2
-        style={{
-          fontFamily: 'var(--font-family-base)',
-          fontWeight: 'var(--font-weight-bold)',
-          fontSize: 'var(--text-xl)',
-          color: 'var(--primary)',
-          lineHeight: 1.3,
-          textAlign: 'right',
-          marginBottom: 24,
-        }}
-      >
-        מטרת ההלוואה
-      </h2>
-
+      <div className="w-full flex flex-col items-center">
+      <div className="w-full max-w-[720px] mb-6" style={{ textAlign: 'right' }}>
+        <h2
+          style={{
+            fontFamily: 'var(--font-family-base)',
+            fontWeight: 'var(--font-weight-bold)',
+            fontSize: 'var(--text-xl)',
+            color: 'var(--primary)',
+            lineHeight: 1.3,
+          }}
+        >
+          מטרת ההלוואה
+        </h2>
+      </div>
       <div className="flex flex-col gap-5 max-w-[720px] w-full">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {LOAN_PURPOSE_OPTIONS.map((opt) => {
@@ -1827,23 +1828,23 @@ function Step2Form({
           })}
         </div>
       </div>
+      </div>
 
       {/* ─── יחידות תרומה עבורן תבוקש ההלוואה ─── */}
-      <h2
-        style={{
-          fontFamily: 'var(--font-family-base)',
-          fontWeight: 'var(--font-weight-bold)',
-          fontSize: 'var(--text-xl)',
-          color: 'var(--primary)',
-          lineHeight: 1.3,
-          textAlign: 'right',
-          marginTop: 48,
-          marginBottom: 24,
-        }}
-      >
-        יחידות תרומה עבורן תבוקש ההלוואה:
-      </h2>
-
+      <div className="w-full flex flex-col items-center">
+      <div className="w-full max-w-[720px] mt-12 mb-6" style={{ textAlign: 'right' }}>
+        <h2
+          style={{
+            fontFamily: 'var(--font-family-base)',
+            fontWeight: 'var(--font-weight-bold)',
+            fontSize: 'var(--text-xl)',
+            color: 'var(--primary)',
+            lineHeight: 1.3,
+          }}
+        >
+          יחידות תרומה עבורן תבוקש ההלוואה:
+        </h2>
+      </div>
       <div className="flex flex-col gap-6 max-w-[720px] w-full">
         {/* קבוצה 1 – יחידות שנתרמו עבור הלווה */}
         <div>
@@ -1979,6 +1980,7 @@ function Step2Form({
           </div>
         </div>
       )}
+      </div>
     </>
   );
 }
@@ -2165,20 +2167,20 @@ function Step3Form({
 
   return (
     <>
-      <h2
-        style={{
-          fontFamily: 'var(--font-family-base)',
-          fontWeight: 'var(--font-weight-bold)',
-          fontSize: 'var(--text-xl)',
-          color: 'var(--primary)',
-          lineHeight: 1.3,
-          textAlign: 'right',
-          marginBottom: 24,
-        }}
-      >
-        הגדרת ערבים
-      </h2>
-
+      <div className="w-full flex flex-col items-center">
+      <div className="w-full max-w-[720px] mb-6" style={{ textAlign: 'right' }}>
+        <h2
+          style={{
+            fontFamily: 'var(--font-family-base)',
+            fontWeight: 'var(--font-weight-bold)',
+            fontSize: 'var(--text-xl)',
+            color: 'var(--primary)',
+            lineHeight: 1.3,
+          }}
+        >
+          הגדרת ערבים
+        </h2>
+      </div>
       <div className="flex flex-col gap-3 max-w-[720px] w-full">
         {guarantors.map((g, i) => {
           const isOpen = openIndex === i;
@@ -2326,6 +2328,7 @@ function Step3Form({
           <span style={{ fontSize: '18px', lineHeight: 1, color: '#9CA3AF' }}>+</span>
         </button>
       </div>
+      </div>
     </>
   );
 }
@@ -2374,32 +2377,34 @@ function Step4Form({
 }) {
   const fieldConfig = CONTACT_FIELD_CONFIG[step4.contactMethod];
   return (
-    <div dir="rtl" className="flex flex-col max-w-[720px] w-full">
-      <h2
-        style={{
-          fontFamily: 'var(--font-family-base)',
-          fontWeight: 'var(--font-weight-bold)',
-          fontSize: 'var(--text-xl)',
-          color: 'var(--primary)',
-          lineHeight: 1.3,
-          textAlign: 'right',
-          marginBottom: 8,
-        }}
-      >
-        למי לשלוח את שטר ההלוואה?
-      </h2>
-      <p
-        style={{
-          fontFamily: 'var(--font-family-base)',
-          fontSize: 'var(--text-sm)',
-          color: 'var(--muted-foreground)',
-          textAlign: 'right',
-          marginBottom: 20,
-        }}
-      >
-        יש לבחור את הגורם עמו ניתן ליצור קשר:
-      </p>
-
+    <>
+      <div className="w-full flex flex-col items-center">
+      <div className="w-full max-w-[720px] mb-2" style={{ textAlign: 'right' }}>
+        <h2
+          style={{
+            fontFamily: 'var(--font-family-base)',
+            fontWeight: 'var(--font-weight-bold)',
+            fontSize: 'var(--text-xl)',
+            color: 'var(--primary)',
+            lineHeight: 1.3,
+          }}
+        >
+          למי לשלוח את שטר ההלוואה?
+        </h2>
+        <p
+          style={{
+            fontFamily: 'var(--font-family-base)',
+            fontSize: 'var(--text-sm)',
+            color: 'var(--muted-foreground)',
+            textAlign: 'right',
+            marginBottom: 0,
+            marginTop: 8,
+          }}
+        >
+          יש לבחור את הגורם עמו ניתן ליצור קשר:
+        </p>
+      </div>
+      <div dir="rtl" className="flex flex-col max-w-[720px] w-full">
       {/* Contact method options – each rounded and separate */}
       <div className="grid grid-cols-2 gap-3 mb-6">
         {CONTACT_METHOD_OPTIONS.map((opt) => {
@@ -2463,7 +2468,9 @@ function Step4Form({
           color: 'var(--foreground)',
         }}
       />
-    </div>
+      </div>
+      </div>
+    </>
   );
 }
 
@@ -2512,21 +2519,22 @@ function Step5Form({
   };
 
   return (
+    <>
+      <div className="w-full flex flex-col items-center">
+      <div className="w-full max-w-[720px] mb-6" style={{ textAlign: 'right' }}>
+        <h2
+          style={{
+            fontFamily: 'var(--font-family-base)',
+            fontWeight: 'var(--font-weight-bold)',
+            fontSize: 'var(--text-xl)',
+            color: 'var(--primary)',
+            lineHeight: 1.3,
+          }}
+        >
+          סיכום הבקשה להלוואה
+        </h2>
+      </div>
     <div dir="rtl" className="flex flex-col max-w-[720px] w-full gap-6">
-      <h2
-        style={{
-          fontFamily: 'var(--font-family-base)',
-          fontWeight: 'var(--font-weight-bold)',
-          fontSize: 'var(--text-xl)',
-          color: 'var(--primary)',
-          lineHeight: 1.3,
-          textAlign: 'right',
-          marginBottom: 8,
-        }}
-      >
-        סיכום הבקשה להלוואה
-      </h2>
-
       {/* 3 summary cards – RTL: סכום ההלוואה | סכום זכאות למענק | עבור מס' יחידות תרומה */}
       <div className="flex flex-row gap-4 flex-wrap">
         <div style={cardStyle}>
@@ -2623,6 +2631,8 @@ function Step5Form({
         />
       </div>
     </div>
+      </div>
+    </>
   );
 }
 
