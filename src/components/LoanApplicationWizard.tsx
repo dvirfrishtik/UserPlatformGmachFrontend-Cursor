@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
-import { X, ChevronDown, ChevronLeft, AlertTriangle, Info, Check } from 'lucide-react';
+import { X, ChevronDown, ChevronLeft, AlertTriangle, Info, Check, ExternalLink } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 
 const MARITAL_OPTIONS = [
@@ -1214,16 +1214,45 @@ function Step2Form({
               />
             </button>
             {showAdditional && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {additionalUnits.map((unit) => (
-                  <UnitCard
-                    key={unit.id}
-                    unit={unit}
-                    selected={step2.selectedUnitIds.includes(unit.id)}
-                    onToggle={() => toggleUnit(unit.id)}
-                  />
-                ))}
-              </div>
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {additionalUnits.map((unit) => (
+                    <UnitCard
+                      key={unit.id}
+                      unit={unit}
+                      selected={step2.selectedUnitIds.includes(unit.id)}
+                      onToggle={() => toggleUnit(unit.id)}
+                    />
+                  ))}
+                </div>
+                <div className="flex justify-end mt-4" dir="rtl">
+                <a
+                  href="/donation-units?filter=unused"
+                  className="inline-flex flex-row-reverse items-center justify-center gap-2 rounded-lg px-4 py-2.5 w-full sm:w-auto"
+                  dir="rtl"
+                  style={{
+                    fontFamily: 'var(--font-family-base)',
+                    fontSize: 'var(--text-sm)',
+                    fontWeight: 500,
+                    color: '#374151',
+                    background: '#E5E7EB',
+                    border: 'none',
+                    cursor: 'pointer',
+                    textDecoration: 'none',
+                    transition: 'background 0.15s',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = '#D1D5DB';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = '#E5E7EB';
+                  }}
+                >
+                  <ExternalLink size={16} style={{ color: '#374151', flexShrink: 0 }} />
+                  <span>לצפייה בשאר יחידות התרומה שלך, אשר טרם ניתנו למימוש</span>
+                </a>
+                </div>
+              </>
             )}
           </div>
         )}
