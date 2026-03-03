@@ -194,9 +194,9 @@ export function LoanApplicationWizard({ isOpen, onClose, onExitAndSave, children
       <div className="flex-1 flex min-h-0 overflow-hidden">
         {/* ── Wizard Sidebar – כחול כהה, full height ── */}
         <aside
-          className="hidden md:flex flex-col shrink-0 py-10 px-8"
+          className="hidden md:flex flex-col shrink-0 py-10 px-5"
           style={{
-            width: '240px',
+            width: '200px',
             background: '#172554',
             borderLeft: '1px solid rgba(255,255,255,0.08)',
           }}
@@ -1057,7 +1057,7 @@ function Step2Form({
   step2,
   setStep2,
   donationUnits = DEFAULT_DONATION_UNITS,
-  borrowerName = 'אברהם צבי',
+  borrowerName = 'שולמית אביה',
 }: {
   step2: LoanWizardStep2Data;
   setStep2: React.Dispatch<React.SetStateAction<LoanWizardStep2Data>>;
@@ -1192,7 +1192,7 @@ function Step2Form({
             <button
               type="button"
               onClick={() => setShowAdditional((v) => !v)}
-              className="flex flex-row items-center gap-2 cursor-pointer mb-3 w-full justify-end"
+              className="flex flex-row-reverse items-center gap-2 cursor-pointer mb-3 w-full justify-end"
               style={{
                 fontFamily: 'var(--font-family-base)',
                 fontSize: 'var(--text-sm)',
