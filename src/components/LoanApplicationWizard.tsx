@@ -434,7 +434,7 @@ function OtherBorrowerApprovalPopup({
               className="mb-4"
               style={{
                 fontFamily: 'var(--font-family-base)',
-                fontSize: 'var(--text-xl)',
+                fontSize: 'var(--text-2xl)',
                 fontWeight: 'var(--font-weight-bold)',
                 color: '#141E44',
                 lineHeight: 1.35,
@@ -467,9 +467,9 @@ function OtherBorrowerApprovalPopup({
           </div>
         </div>
 
-        {/* פוטר כפתורים – כמו בפופאפים אחרים */}
+        {/* פוטר כפתורים – ממורכזים */}
         <div
-          className="flex flex-row-reverse gap-3 shrink-0"
+          className="flex flex-row-reverse justify-center gap-3 shrink-0"
           style={{
             padding: '20px 32px 24px',
             borderTop: '1px solid #E5E9F9',
