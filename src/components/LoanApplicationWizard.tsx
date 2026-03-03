@@ -206,8 +206,8 @@ export function LoanApplicationWizard({ isOpen, onClose, onExitAndSave, children
 
   if (!isOpen) return null;
 
-  const canNavigateToStep = (stepId: number) =>
-    stepId <= currentStep || completedSteps.includes(stepId);
+  /** ניווט רק לשלבים שכבר בוצעו או שהם כרגע במילוי */
+  const canNavigateToStep = (stepId: number) => stepId <= currentStep;
 
   const handleContinue = () => {
     if (currentStep < 5) {
@@ -286,7 +286,7 @@ export function LoanApplicationWizard({ isOpen, onClose, onExitAndSave, children
           <div className="flex flex-col">
             {WIZARD_STEPS.map((step, index) => {
               const active = step.id === currentStep;
-              const completed = completedSteps.includes(step.id);
+              const completed = step.id < currentStep;
               const clickable = canNavigateToStep(step.id);
               const filled = active || completed;
               const isLast = index === WIZARD_STEPS.length - 1;

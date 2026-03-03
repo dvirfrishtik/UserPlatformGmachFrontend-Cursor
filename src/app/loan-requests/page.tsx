@@ -61,6 +61,7 @@ export default function LoanRequestsPage() {
             fontWeight: 'var(--font-weight-semibold)',
             color: '#FFFFFF',
             backgroundColor: '#141E44',
+            flexDirection: 'row-reverse',
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.backgroundColor = '#0F1A3E';
@@ -69,8 +70,8 @@ export default function LoanRequestsPage() {
             e.currentTarget.style.backgroundColor = '#141E44';
           }}
         >
-          <ChevronLeft size={18} strokeWidth={2.5} />
           להגשת בקשה ראשונית להלוואה
+          <ChevronLeft size={18} strokeWidth={2.5} />
         </button>
       </div>
 
