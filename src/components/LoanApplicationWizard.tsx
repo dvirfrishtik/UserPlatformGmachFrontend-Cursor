@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { X, ChevronDown, ChevronLeft, AlertTriangle, Info, Check, ExternalLink, User, Trash2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Dialog,
   DialogContent,
@@ -2872,13 +2873,8 @@ function Step5Form({
         >
           אני מאשר שקראתי והבנתי את התנאים המשפטיים להגשת בקשה ראשונית להלוואה דרך הגמ"ח המרכזי
         </button>
-        <input
-          type="checkbox"
+        <Checkbox
           checked={step5.termsAccepted}
-          readOnly
-          tabIndex={-1}
-          className="rounded border-border shrink-0 w-5 h-5 pointer-events-none"
-          style={{ accentColor: 'var(--primary)' }}
           aria-label="אישור תנאים"
         />
       </div>
