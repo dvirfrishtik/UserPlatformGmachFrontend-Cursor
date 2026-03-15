@@ -52,6 +52,8 @@ export interface LoanWizardStep1Data {
   idNumber: string;
   birthDate: string;
   selectedChildId: string;
+  /** 'child' = נבחר ילד מהמשבצות, 'other' = לווה אחר (מציג שדה שם מלא) */
+  borrowerType: 'child' | 'other' | '';
   phone: string;
   email: string;
   relationship: string;
@@ -200,6 +202,7 @@ const emptyStep1: LoanWizardStep1Data = {
   idNumber: '',
   birthDate: '',
   selectedChildId: '',
+  borrowerType: '',
   phone: '',
   email: '',
   relationship: '',
@@ -1160,15 +1163,6 @@ function Step1Form({
   const [otherBorrowerApproved, setOtherBorrowerApproved] = useState(false);
   const [showUnderAgePopup, setShowUnderAgePopup] = useState(false);
 
-  const handleFullNameChange = (v: string) => {
-    const match = childrenForLoan.find((c) => c.name === v.trim());
-    setStep1((p) => ({
-      ...p,
-      fullName: v,
-      selectedChildId: match ? match.id : '',
-    }));
-  };
-
   const isNameInList = step1.fullName.trim() && childrenForLoan.some((c) => c.name === step1.fullName.trim());
   const handleIdNumberFocus = () => {
     if (step1.fullName.trim() && !isNameInList && !otherBorrowerApproved) {
@@ -1213,17 +1207,117 @@ function Step1Form({
         </h2>
       </div>
       <div className="flex flex-col gap-5 max-w-[720px] w-full min-w-0">
-        {/* Row 1: שם מלא (עם דרופדאון ילדים) | ת.ז. | תאריך לידה */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <FullNameWithChildDropdown
-            label="שם מלא"
-            value={step1.fullName}
-            selectedChildId={step1.selectedChildId}
-            onChange={handleFullNameChange}
-            onSelectChild={(id) => setStep1((p) => ({ ...p, selectedChildId: id }))}
-            childrenForLoan={childrenForLoan}
-            placeholder="הזן שם מלא"
-          />
+        {/* משבצות: שמות הילדים + יחידות למימוש + לווה אחר */}
+        <div className="w-full" dir="rtl">
+          <label
+            className="block mb-3"
+            style={{
+              fontFamily: 'var(--font-family-base)',
+              fontSize: 'var(--text-sm)',
+              fontWeight: 'var(--font-weight-normal)',
+              color: 'var(--muted-foreground)',
+              textAlign: 'right',
+            }}
+          >
+            שם מלא
+          </label>
+          <div className="flex flex-wrap gap-2 sm:gap-3">
+            {childrenForLoan.map((child) => {
+              const selected = step1.borrowerType === 'child' && step1.selectedChildId === child.id;
+              return (
+                <button
+                  key={child.id}
+                  type="button"
+                  onClick={() =>
+                    setStep1((p) => ({
+                      ...p,
+                      borrowerType: 'child',
+                      selectedChildId: child.id,
+                      fullName: child.name,
+                    }))
+                  }
+                  className="flex flex-col items-center justify-center gap-1.5 min-h-[88px] w-[min(120px,28vw)] sm:w-[110px] shrink-0 rounded-xl border transition-all cursor-pointer"
+                  style={{
+                    fontFamily: 'var(--font-family-base)',
+                    background: selected ? '#EFF6FF' : 'var(--card)',
+                    borderColor: selected ? 'var(--primary)' : 'var(--border)',
+                    borderWidth: selected ? 2 : 1,
+                    boxShadow: selected ? '0 2px 8px rgba(23, 37, 84, 0.12)' : 'var(--elevation-sm)',
+                  }}
+                >
+                  <div
+                    className="flex items-center justify-center w-10 h-10 rounded-full shrink-0"
+                    style={{ background: selected ? 'rgba(23, 37, 84, 0.12)' : 'var(--muted)' }}
+                  >
+                    <User size={20} style={{ color: selected ? 'var(--primary)' : 'var(--muted-foreground)' }} />
+                  </div>
+                  <span
+                    className="text-center block truncate w-full px-1"
+                    style={{
+                      fontSize: 'var(--text-sm)',
+                      fontWeight: selected ? 'var(--font-weight-semibold)' : 'var(--font-weight-normal)',
+                      color: selected ? 'var(--primary)' : 'var(--foreground)',
+                    }}
+                  >
+                    {child.name}
+                  </span>
+                  <span
+                    className="text-center block text-xs"
+                    style={{ color: 'var(--muted-foreground)' }}
+                  >
+                    {child.unitsCount} יחידות
+                  </span>
+                </button>
+              );
+            })}
+            {/* משבצת לווה אחר */}
+            <button
+              type="button"
+              onClick={() =>
+                setStep1((p) => ({
+                  ...p,
+                  borrowerType: 'other',
+                  selectedChildId: '',
+                  fullName: p.fullName,
+                }))
+              }
+              className="flex flex-col items-center justify-center min-h-[88px] w-[min(120px,28vw)] sm:w-[110px] shrink-0 rounded-xl border transition-all cursor-pointer"
+              style={{
+                fontFamily: 'var(--font-family-base)',
+                background: step1.borrowerType === 'other' ? '#EFF6FF' : 'var(--card)',
+                borderColor: step1.borrowerType === 'other' ? 'var(--primary)' : 'var(--border)',
+                borderWidth: step1.borrowerType === 'other' ? 2 : 1,
+                boxShadow: step1.borrowerType === 'other' ? '0 2px 8px rgba(23, 37, 84, 0.12)' : 'var(--elevation-sm)',
+              }}
+            >
+              <span
+                className="text-center px-2"
+                style={{
+                  fontSize: 'var(--text-sm)',
+                  fontWeight: step1.borrowerType === 'other' ? 'var(--font-weight-semibold)' : 'var(--font-weight-normal)',
+                  color: step1.borrowerType === 'other' ? 'var(--primary)' : 'var(--foreground)',
+                }}
+              >
+                לווה אחר
+              </span>
+            </button>
+          </div>
+        </div>
+
+        {/* שדה שם מלא – מוצג רק כש"לווה אחר" נבחר */}
+        {step1.borrowerType === 'other' && (
+          <div className="w-full">
+            <WizardInput
+              label="שם מלא"
+              value={step1.fullName}
+              onChange={(v) => setStep1((p) => ({ ...p, fullName: v }))}
+              placeholder="הזן שם מלא"
+            />
+          </div>
+        )}
+
+        {/* ת.ז. | תאריך לידה */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <WizardInput
             label="ת.ז."
             value={step1.idNumber}
