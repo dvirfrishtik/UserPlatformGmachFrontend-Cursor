@@ -1362,7 +1362,7 @@ function Step1Form({
                   ...p,
                   borrowerType: 'other',
                   selectedChildId: '',
-                  fullName: p.fullName,
+                  fullName: '',
                 }))
               }
             />
