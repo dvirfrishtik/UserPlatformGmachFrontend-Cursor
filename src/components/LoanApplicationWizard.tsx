@@ -3,9 +3,36 @@
 import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import Image from 'next/image';
-import { X, ChevronDown, ChevronLeft, AlertTriangle, Info, Check, ExternalLink, User, Minus } from 'lucide-react';
+import { X, ChevronDown, ChevronLeft, AlertTriangle, Info, Check, ExternalLink, User, Trash2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
 import { LoanRepaymentTable } from '@/components/LoanRepaymentTable';
+
+/* ─── תנאים לבקשת הלוואה (תצוגה בפופאף) ─── */
+const LOAN_TERMS_SECTIONS = [
+  { title: '1. מטרת ההלוואה', body: 'ההלוואה ניתנת לצורכי מימון אישי/משפחתי בהתאם למדיניות הגמ"ח. השימוש בכספי ההלוואה חייב להיות בהתאם למטרה שצוינה בבקשה.' },
+  { title: '2. זכאות', body: 'זכאי להגיש בקשה חבר/ת גמ"ח שמלאו לו 21 שנה, בעל עמדה פעילה (יחידות תרומה בתוקף) ומענה על דרישות הזכאות כפי שייקבעו מעת לעת.' },
+  { title: '3. גובה ההלוואה והחזר', body: 'גובה ההלוואה נקבע לפי יחידות התרומה ומגבלות התקנון. ההחזר יבוצע בתשלומים חודשיים שווים לאורך תקופת ההלוואה (בדרך כלל עד 120 תשלומים), אלא אם נקבע אחרת.' },
+  { title: '4. ריבית ועלויות', body: 'ההלוואה כפופה לריבית ולדמי ניהול כפי שייקבעו בתקנון הגמ"ח. כל עלות נוספת (ביטוח, עמלות וכו\') תתווסף בהתאם להסכם.' },
+  { title: '5. לוח סילוקין', body: 'הגמ"ח ימסור ללווה לוח סילוקין מפורט. התאריך הראשון לתשלום ולמועדי התשלום החודשי ייקבעו בעת אישור ההלוואה.' },
+  { title: '6. ערבות', body: 'בהתאם למדיניות הגמ"ח, ייתכן שיידרשו ערבים. הערבים יחויבו בהתחייבות כפי שייקבע בהסכם הערבות, ובמקרה של אי-עמידה בהחזר יופנה החיוב גם כלפיהם.' },
+  { title: '7. ביטוח', body: 'הגמ"ח רשאי לדרוש ביטוח חיים או ביטוח משכנתא כנגד יתרת החוב, לטובת הגמ"ח, ככל שייקבע.' },
+  { title: '8. איחור בתשלום', body: 'איחור בתשלום עלול לגרור ריבית פיגורים ו/או קנסות כפי שייקבעו בתקנון. אי-תשלום חוזר עלול להביא לפעולות לגביית החוב ולהשעיה או סיום חברות.' },
+  { title: '9. ביטול והחזרה מוקדמת', body: 'הלווה רשאי להחזיר את ההלוואה לפני המועד, בהתאם להסדר החזרה מוקדמת שיפורסם. ביטול או שינוי לאחר חתימה עשויים להיות כרוכים בעלויות.' },
+  { title: '10. שינוי תנאים', body: 'הגמ"ח שומר את הזכות לשנות תנאים (ריבית, דמי ניהול, כללים) בהתאם לתקנון ולהודיע על כך מראש. המשך שימוש בהלוואה לאחר שינוי עשוי להיחשב להסכמה.' },
+  { title: '11. דיווח ומידע', body: 'הלווה מתחייב למסור מידע נכון ומלא ולעדכן על כל שינוי במצבו הכלכלי או האישי שעלול להשפיע על יכולת ההחזר.' },
+  { title: '12. שמירת סודיות', body: 'כל המידע שמסר הלווה יישמר בסודיות וישמש רק לצורכי הטיפול בבקשה ובהלוואה, בהתאם לחוק ולמדיניות הגמ"ח.' },
+  { title: '13. הגבלות', body: 'אסור להעביר את ההלוואה לצד שלישי או לשעבדה ללא אישור בכתב. שימוש בניגוד לתנאים עלול להביא לסיום ההלוואה ולדרישת החזר מיידי.' },
+  { title: '14. דין וסמכות שיפוט', body: 'על ההלוואה והבקשה יחול דין מדינת ישראל. כל סכסוך יידון בפני הערכאות המוסמכות באזור מקום מושבו של הגמ"ח.' },
+  { title: '15. אישור והצהרות', body: 'בהגשת הבקשה הלווה מצהיר שקרא והבין את התנאים, שהפרטים שמסר נכונים ומלאים, והוא מתחייב לעמוד בכל התנאים והחובות הנובעים מהלוואה זו.' },
+];
 
 const MARITAL_OPTIONS = [
   { value: 'married', label: 'נשוי' },
@@ -214,6 +241,66 @@ const LOAN_PURPOSE_OPTIONS = [
   { value: 'other' as const, label: 'אחר', icon: '/icons/other.svg' },
 ];
 
+/* ─── כרטיס מטרת הלוואה (עיצוב זהה לכרטיסי ילדים) ─── */
+function LoanPurposeCard({
+  option,
+  isSelected,
+  onClick,
+}: {
+  option: (typeof LOAN_PURPOSE_OPTIONS)[number];
+  isSelected: boolean;
+  onClick: () => void;
+}) {
+  const [isHovered, setIsHovered] = useState(false);
+  return (
+    <button
+      type="button"
+      className="flex items-center gap-3 sm:gap-4 w-full min-w-0 transition-all text-right"
+      style={{
+        padding: 'clamp(14px, 3vw, 20px) clamp(16px, 3.5vw, 24px)',
+        borderRadius: '8px',
+        backgroundColor: '#FFFFFF',
+        border: isSelected ? '1.5px solid #3B82F6' : '1.5px solid transparent',
+        cursor: 'pointer',
+        outline: 'none',
+        boxShadow: isSelected
+          ? '0 0 12px rgba(59, 130, 246, 0.12)'
+          : isHovered
+            ? '0 0 12px rgba(24, 47, 67, 0.12)'
+            : '0 0 12px rgba(24, 47, 67, 0.06)',
+      }}
+      onClick={onClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className="shrink-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12">
+        <Image
+          src={option.icon}
+          alt={option.label}
+          width={48}
+          height={48}
+          unoptimized
+          style={{ opacity: isSelected ? 1 : 0.7, objectFit: 'contain' }}
+        />
+      </div>
+      <div className="flex flex-col items-start min-w-0 flex-1">
+        <p
+          style={{
+            fontFamily: 'var(--font-family-base)',
+            fontSize: 'clamp(15px, 2.5vw, 17px)',
+            fontWeight: isSelected ? 'var(--font-weight-bold)' : 'var(--font-weight-semibold)',
+            color: isSelected ? '#141E44' : '#495157',
+            lineHeight: '24px',
+            transition: 'color 0.2s ease',
+          }}
+        >
+          {option.label}
+        </p>
+      </div>
+    </button>
+  );
+}
+
 const emptyStep2: LoanWizardStep2Data = {
   loanPurpose: '',
   selectedUnitIds: [],
@@ -274,16 +361,78 @@ function createEmptyGuarantors(count: number): GuarantorData[] {
 }
 
 export interface LoanWizardStep4Data {
-  contactMethod: 'borrower_email' | 'donor_email' | 'borrower_fax' | 'other';
+  contactMethod: 'borrower_email' | 'borrower_fax';
   borrowerEmail: string;
 }
 
 const CONTACT_METHOD_OPTIONS: { value: LoanWizardStep4Data['contactMethod']; label: string }[] = [
-  { value: 'borrower_email', label: 'למייל של הלווה' },
-  { value: 'donor_email', label: 'למייל של התורם' },
-  { value: 'borrower_fax', label: 'לפקס של הלווה' },
-  { value: 'other', label: 'אחר' },
+  { value: 'borrower_email', label: 'למייל' },
+  { value: 'borrower_fax', label: 'לפקס' },
 ];
+
+/* ─── כרטיס שיטת התקשרות (עיצוב זהה לכרטיסי ילדים/מטרת הלוואה, רדיו מימין לטקסט) ─── */
+function ContactMethodCard({
+  option,
+  isSelected,
+  onClick,
+}: {
+  option: (typeof CONTACT_METHOD_OPTIONS)[number];
+  isSelected: boolean;
+  onClick: () => void;
+}) {
+  const [isHovered, setIsHovered] = useState(false);
+  return (
+    <button
+      type="button"
+      className="flex items-center gap-3 sm:gap-4 w-full min-w-0 transition-all text-right"
+      dir="rtl"
+      style={{
+        padding: 'clamp(14px, 3vw, 20px) clamp(16px, 3.5vw, 24px)',
+        borderRadius: '8px',
+        backgroundColor: '#FFFFFF',
+        border: isSelected ? '1.5px solid #3B82F6' : '1.5px solid transparent',
+        cursor: 'pointer',
+        outline: 'none',
+        boxShadow: isSelected
+          ? '0 0 12px rgba(59, 130, 246, 0.12)'
+          : isHovered
+            ? '0 0 12px rgba(24, 47, 67, 0.12)'
+            : '0 0 12px rgba(24, 47, 67, 0.06)',
+      }}
+      onClick={onClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* רדיו מימין לטקסט (ב-RTL האלמנט הראשון מופיע מימין) */}
+      <span
+        className="flex items-center justify-center w-[18px] h-[18px] rounded-full shrink-0"
+        style={{
+          border: `2px solid ${isSelected ? '#3B82F6' : 'var(--border)'}`,
+        }}
+      >
+        {isSelected && (
+          <span
+            className="w-2.5 h-2.5 rounded-full"
+            style={{ background: '#3B82F6' }}
+          />
+        )}
+      </span>
+      <span
+        className="flex-1 min-w-0 text-right"
+        style={{
+          fontFamily: 'var(--font-family-base)',
+          fontSize: 'clamp(15px, 2.5vw, 17px)',
+          fontWeight: isSelected ? 'var(--font-weight-bold)' : 'var(--font-weight-semibold)',
+          color: isSelected ? '#141E44' : '#495157',
+          lineHeight: '24px',
+          transition: 'color 0.2s ease',
+        }}
+      >
+        {option.label}
+      </span>
+    </button>
+  );
+}
 
 const emptyStep4: LoanWizardStep4Data = {
   contactMethod: 'borrower_email',
@@ -525,7 +674,7 @@ export function LoanApplicationWizard({ isOpen, onClose, onExitAndSave, onSubmit
                   <Step3Form guarantors={guarantors} setGuarantors={setGuarantors} />
                 )}
                 {currentStep === 4 && (
-                  <Step4Form step4={step4} setStep4={setStep4} />
+                  <Step4Form step1={step1} step4={step4} setStep4={setStep4} />
                 )}
                 {currentStep === 5 && (
                   <Step5Form step1={step1} step2={step2} step5={step5} setStep5={setStep5} />
@@ -1943,45 +2092,15 @@ function Step2Form({
         </h2>
       </div>
       <div className="flex flex-col gap-5 max-w-[720px] w-full min-w-0">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {LOAN_PURPOSE_OPTIONS.map((opt) => {
-            const selected = step2.loanPurpose === opt.value;
-            return (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => setStep2((p) => ({ ...p, loanPurpose: opt.value }))}
-                className="flex flex-col items-center justify-center gap-3 rounded-xl cursor-pointer transition-all"
-                style={{
-                  height: '160px',
-                  background: selected ? '#F8FAFC' : '#FAFAFA',
-                  border: selected ? '2px solid var(--primary)' : '1.5px solid #E5E9F9',
-                  boxShadow: selected
-                    ? '0 0 0 3px rgba(23, 37, 84, 0.08)'
-                    : '0 1px 3px rgba(0,0,0,0.04)',
-                }}
-              >
-                <Image
-                  src={opt.icon}
-                  alt={opt.label}
-                  width={50}
-                  height={50}
-                  unoptimized
-                  style={{ opacity: selected ? 1 : 0.5 }}
-                />
-                <span
-                  style={{
-                    fontFamily: 'var(--font-family-base)',
-                    fontSize: 'var(--text-base)',
-                    fontWeight: selected ? 'var(--font-weight-semibold)' : 'var(--font-weight-normal)',
-                    color: selected ? '#172554' : '#6B7280',
-                  }}
-                >
-                  {opt.label}
-                </span>
-              </button>
-            );
-          })}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full gap-3 sm:gap-[14px]">
+          {LOAN_PURPOSE_OPTIONS.map((opt) => (
+            <LoanPurposeCard
+              key={opt.value}
+              option={opt}
+              isSelected={step2.loanPurpose === opt.value}
+              onClick={() => setStep2((p) => ({ ...p, loanPurpose: opt.value }))}
+            />
+          ))}
         </div>
       </div>
       </div>
@@ -2362,7 +2481,7 @@ function Step3Form({
                     style={{ border: 'none', background: 'transparent', cursor: 'pointer' }}
                     aria-label="הסרת ערב"
                   >
-                    <Minus size={18} style={{ color: '#6B7280' }} />
+                    <Trash2 size={18} style={{ color: '#6B7280' }} />
                   </button>
                 )}
                 <button
@@ -2516,18 +2635,18 @@ function Step4InfoPanelContent() {
 /* ─── Step 4: פרטי התקשרות ─── */
 const CONTACT_FIELD_CONFIG: Record<
   LoanWizardStep4Data['contactMethod'],
-  { label: string; placeholder: string; inputType: 'email' | 'tel' | 'text' }
+  { label: string; placeholder: string; inputType: 'email' | 'tel' }
 > = {
-  borrower_email: { label: 'כתובת אימייל של הלווה', placeholder: 'הזן כתובת אימייל', inputType: 'email' },
-  donor_email: { label: 'כתובת אימייל של התורם', placeholder: 'הזן כתובת אימייל', inputType: 'email' },
-  borrower_fax: { label: "מס׳ פקס של הלווה", placeholder: "הזן מס׳ פקס", inputType: 'tel' },
-  other: { label: 'פרטי התקשרות', placeholder: 'הזן פרטים', inputType: 'text' },
+  borrower_email: { label: 'כתובת אימייל לשליחת השטר', placeholder: 'הזן כתובת אימייל', inputType: 'email' },
+  borrower_fax: { label: "מס׳ פקס לשליחת השטר", placeholder: "הזן מס׳ פקס", inputType: 'tel' },
 };
 
 function Step4Form({
+  step1,
   step4,
   setStep4,
 }: {
+  step1: LoanWizardStep1Data;
   step4: LoanWizardStep4Data;
   setStep4: React.Dispatch<React.SetStateAction<LoanWizardStep4Data>>;
 }) {
@@ -2535,7 +2654,7 @@ function Step4Form({
   return (
     <>
       <div className="w-full flex flex-col items-center">
-      <div className="w-full max-w-[720px] mb-2" style={{ textAlign: 'right' }}>
+      <div className="w-full max-w-[720px] mb-6" style={{ textAlign: 'right' }}>
         <h2
           style={{
             fontFamily: 'var(--font-family-base)',
@@ -2545,59 +2664,26 @@ function Step4Form({
             lineHeight: 1.3,
           }}
         >
-          למי לשלוח את שטר ההלוואה?
+          לאן לשלוח את שטר ההלוואה?
         </h2>
-        <p
-          style={{
-            fontFamily: 'var(--font-family-base)',
-            fontSize: 'var(--text-sm)',
-            color: 'var(--muted-foreground)',
-            textAlign: 'right',
-            marginBottom: 0,
-            marginTop: 8,
-          }}
-        >
-          יש לבחור את הגורם עמו ניתן ליצור קשר:
-        </p>
       </div>
       <div dir="rtl" className="flex flex-col max-w-[720px] w-full min-w-0">
-      {/* Contact method options – responsive: 1 col on narrow, 2 on wider */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-        {CONTACT_METHOD_OPTIONS.map((opt) => {
-          const selected = step4.contactMethod === opt.value;
-          return (
-            <button
-              key={opt.value}
-              type="button"
-              onClick={() => setStep4((p) => ({ ...p, contactMethod: opt.value }))}
-              className="inline-flex flex-row-reverse items-center justify-center gap-2 h-12 cursor-pointer transition-all border w-full rounded-lg"
-              style={{
-                fontFamily: 'var(--font-family-base)',
-                fontSize: 'var(--text-sm)',
-                fontWeight: selected ? 'var(--font-weight-semibold)' : 'var(--font-weight-normal)',
-                color: selected ? 'var(--primary)' : 'var(--muted-foreground)',
-                background: selected ? '#EFF6FF' : 'var(--card)',
-                borderColor: selected ? 'var(--primary)' : 'var(--border)',
-                textAlign: 'right',
-              }}
-            >
-              <span
-                className="flex items-center justify-center w-[18px] h-[18px] rounded-full shrink-0"
-                style={{
-                  border: `2px solid ${selected ? 'var(--primary)' : 'var(--border)'}`,
-                }}
-              >
-                {selected && (
-                  <span
-                    className="w-2.5 h-2.5 rounded-full"
-                    style={{ background: 'var(--primary)' }}
-                  />
-                )}
-              </span>
-              {opt.label}
-            </button>
-          );
-        })}
+      {/* Contact method options – כרטיסים כמו בשלב 1 ו-2, רדיו מימין לטקסט */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 w-full gap-3 sm:gap-[14px] mb-6">
+        {CONTACT_METHOD_OPTIONS.map((opt) => (
+          <ContactMethodCard
+            key={opt.value}
+            option={opt}
+            isSelected={step4.contactMethod === opt.value}
+            onClick={() =>
+              setStep4((p) => ({
+                ...p,
+                contactMethod: opt.value,
+                borrowerEmail: opt.value === 'borrower_email' ? step1.email : p.borrowerEmail,
+              }))
+            }
+          />
+        ))}
       </div>
 
       <label
@@ -2643,12 +2729,19 @@ function Step5Form({
   setStep5: React.Dispatch<React.SetStateAction<LoanWizardStep5Data>>;
 }) {
   const [showPaymentDetailTable, setShowPaymentDetailTable] = useState(false);
+  const [termsPopupOpen, setTermsPopupOpen] = useState(false);
   const totalUnits = step2.selectedUnitIds.length;
   const totalLoanAmount = DEFAULT_DONATION_UNITS
     .filter((u) => step2.selectedUnitIds.includes(u.id))
     .reduce((sum, u) => sum + u.loanEntitlement, 0);
   const monthlyPayment = totalUnits > 0 ? Math.round(totalLoanAmount / 120) : 0;
   const grantAmount = DEFAULT_GRANT_ELIGIBILITY;
+  /** רשימת מס׳ יחידות שנבחרו (ממוינת, עם פסיקים, לדוגמה: 7,8,12,15) */
+  const selectedUnitNumbersList = DEFAULT_DONATION_UNITS
+    .filter((u) => step2.selectedUnitIds.includes(u.id))
+    .map((u) => u.unitNumber)
+    .sort((a, b) => a - b)
+    .join(',');
 
   const cardStyle = {
     background: '#F1F5F9',
@@ -2691,8 +2784,12 @@ function Step5Form({
         </h2>
       </div>
     <div dir="rtl" className="flex flex-col max-w-[720px] w-full min-w-0 gap-6">
-      {/* 3 summary cards – RTL: סכום ההלוואה | סכום זכאות למענק | עבור מס' יחידות תרומה */}
-      <div className="flex flex-row gap-4 flex-wrap">
+      {/* 4 כרטיסי סיכום – RTL: ראשון מימין עבור + שם, אחריו סכום הלוואה, זכאות למענק, יח׳ תרומה (רשימת מספרים) */}
+      <div className="flex flex-row gap-4 flex-wrap" style={{ direction: 'rtl' }}>
+        <div style={cardStyle}>
+          <div style={labelStyle}>עבור</div>
+          <div style={valueStyle}>{step1.fullName || '—'}</div>
+        </div>
         <div style={cardStyle}>
           <div style={labelStyle}>סכום ההלוואה</div>
           <div style={valueStyle}>₪{totalLoanAmount.toLocaleString('he-IL')}</div>
@@ -2702,8 +2799,8 @@ function Step5Form({
           <div style={valueStyle}>₪{grantAmount.toLocaleString('he-IL')}</div>
         </div>
         <div style={cardStyle}>
-          <div style={labelStyle}>עבור מס׳ יחידות תרומה</div>
-          <div style={valueStyle}>{totalUnits} יחידות</div>
+          <div style={labelStyle}>עבור יח׳ תרומה</div>
+          <div style={valueStyle}>{selectedUnitNumbersList || '—'}</div>
         </div>
       </div>
 
@@ -2752,7 +2849,7 @@ function Step5Form({
         )}
       </div>
 
-      {/* תנאים ואישור */}
+      {/* תנאים ואישור – לחיצה פותחת פופאף; הצ'ק בוקס מסומן רק אחרי אישור בפופאף */}
       <div
         className="rounded-xl w-full flex flex-row-reverse items-start gap-3 cursor-pointer"
         style={{
@@ -2760,10 +2857,10 @@ function Step5Form({
           border: '1px solid #E2E8F0',
           padding: '16px 20px',
         }}
-        onClick={() => setStep5((p) => ({ ...p, termsAccepted: !p.termsAccepted }))}
+        onClick={() => setTermsPopupOpen(true)}
         role="button"
         tabIndex={0}
-        onKeyDown={(e) => e.key === 'Enter' && setStep5((p) => ({ ...p, termsAccepted: !p.termsAccepted }))}
+        onKeyDown={(e) => e.key === 'Enter' && setTermsPopupOpen(true)}
       >
         <label
           className="flex-1 text-right cursor-pointer"
@@ -2779,13 +2876,83 @@ function Step5Form({
         <input
           type="checkbox"
           checked={step5.termsAccepted}
-          onChange={(e) => setStep5((p) => ({ ...p, termsAccepted: e.target.checked }))}
-          onClick={(e) => e.stopPropagation()}
-          className="rounded border-border shrink-0 w-5 h-5"
+          readOnly
+          tabIndex={-1}
+          className="rounded border-border shrink-0 w-5 h-5 pointer-events-none"
           style={{ accentColor: 'var(--primary)' }}
           aria-label="אישור תנאים"
         />
       </div>
+
+      {/* פופאף תנאים – עיצוב כמו פופאפים קיימים, כפתור ראשי "אני מאשר את התנאים" מסמן את הצ'ק בוקס */}
+      <Dialog open={termsPopupOpen} onOpenChange={setTermsPopupOpen}>
+        <DialogContent
+          className="p-0 gap-0 max-w-[min(560px,92vw)] max-h-[90vh] flex flex-col border border-[#E5E9F9] shadow-[0_0_12px_rgba(24,47,67,0.08),0_32px_64px_-16px_rgba(23,37,84,0.18)]"
+          style={{
+            background: 'linear-gradient(180deg, #F7F8FA 0%, #F7F8FA 100%)',
+            borderRadius: '12px',
+          }}
+        >
+          <DialogHeader
+            className="flex flex-row items-center justify-between shrink-0 px-6 py-5 border-b border-[var(--border)] text-right"
+            style={{ direction: 'rtl' }}
+          >
+            <DialogTitle
+              className="text-lg font-bold leading-tight m-0"
+              style={{
+                fontFamily: 'var(--font-family-base)',
+                color: 'var(--foreground)',
+              }}
+            >
+              תנאים לבקשת הלוואה
+            </DialogTitle>
+          </DialogHeader>
+          <div
+            className="flex-1 overflow-y-auto px-6 py-4 text-right"
+            dir="rtl"
+            style={{
+              fontFamily: 'var(--font-family-base)',
+              fontSize: 'var(--text-sm)',
+              color: 'var(--foreground)',
+              lineHeight: 1.6,
+            }}
+          >
+            {LOAN_TERMS_SECTIONS.map((section) => (
+              <div key={section.title} className="mb-4 last:mb-0">
+                <div
+                  className="font-semibold mb-1"
+                  style={{ color: 'var(--primary)' }}
+                >
+                  {section.title}
+                </div>
+                <p className="m-0 text-[var(--foreground)]">{section.body}</p>
+              </div>
+            ))}
+          </div>
+          <DialogFooter
+            className="flex flex-row justify-start gap-3 shrink-0 px-6 py-4 border-t border-[var(--border)]"
+            style={{ direction: 'rtl' }}
+          >
+            <Button
+              variant="default"
+              onClick={() => {
+                setStep5((p) => ({ ...p, termsAccepted: true }));
+                setTermsPopupOpen(false);
+              }}
+              className="rounded-lg"
+            >
+              אני מאשר את התנאים
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setTermsPopupOpen(false)}
+              className="rounded-lg"
+            >
+              סגור
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
       </div>
     </>

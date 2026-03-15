@@ -92,26 +92,27 @@ export function LoanRepaymentTable({
           הלוואה ללא ריבית. תשלום חודשי קבוע — ₪{Math.round(monthlyPayment).toLocaleString('he-IL')}.
         </p>
         <div style={{ maxHeight: '400px', overflowY: 'auto', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
-          <table className="w-full border-collapse" style={{ minWidth: '560px', tableLayout: 'fixed' }} dir="rtl">
+          <table className="w-full border-collapse" style={{ minWidth: '420px', tableLayout: 'fixed' }} dir="rtl">
             <thead style={{ position: 'sticky', top: 0, zIndex: 1 }}>
               <tr>
-                <th style={{ ...headerStyle, width: '12%' }}>מס׳ חודש</th>
-                <th style={{ ...headerStyle, width: '22%' }}>תאריך תשלום</th>
-                <th style={{ ...headerStyle, width: '22%' }}>תשלום חודשי</th>
-                <th style={{ ...headerStyle, width: '22%' }}>קרן</th>
-                <th style={{ ...headerStyle, width: '22%' }}>יתרת קרן</th>
+                <th style={{ ...headerStyle, width: '20%' }}>מס׳ חודש</th>
+                <th style={{ ...headerStyle, width: '26%' }}>תשלום חודשי</th>
+                <th style={{ ...headerStyle, width: '27%' }}>סה״כ שולם</th>
+                <th style={{ ...headerStyle, width: '27%' }}>נותר לתשלום</th>
               </tr>
             </thead>
             <tbody>
-              {schedule.map((row) => (
-                <tr key={row.month}>
-                  <td style={cellStyle}>{row.month}</td>
-                  <td style={cellStyle}>{row.date}</td>
-                  <td style={cellStyle}>₪{Math.round(row.payment).toLocaleString('he-IL')}</td>
-                  <td style={cellStyle}>₪{Math.round(row.principal).toLocaleString('he-IL')}</td>
-                  <td style={cellStyle}>₪{Math.round(row.balance).toLocaleString('he-IL')}</td>
-                </tr>
-              ))}
+              {schedule.map((row) => {
+                const totalPaidSoFar = principal - row.balance;
+                return (
+                  <tr key={row.month}>
+                    <td style={cellStyle}>{row.month}</td>
+                    <td style={cellStyle}>₪{Math.round(row.payment).toLocaleString('he-IL')}</td>
+                    <td style={cellStyle}>₪{Math.round(totalPaidSoFar).toLocaleString('he-IL')}</td>
+                    <td style={cellStyle}>₪{Math.round(row.balance).toLocaleString('he-IL')}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
