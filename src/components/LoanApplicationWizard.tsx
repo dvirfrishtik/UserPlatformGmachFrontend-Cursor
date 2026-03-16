@@ -717,7 +717,7 @@ export function LoanApplicationWizard({ isOpen, onClose, onExitAndSave, onSubmit
             return (
               <div className="shrink-0 flex justify-center px-4 sm:px-6 md:px-12 lg:pl-[304px] lg:pr-0">
                 <div
-                  className="w-full flex flex-row items-center justify-center gap-4 sm:gap-6 px-4 py-2.5 sm:py-3"
+                  className="w-full max-w-[720px] flex flex-row items-center justify-center gap-4 sm:gap-6 px-4 py-2.5 sm:py-3"
                   dir="rtl"
                   style={{
                     background: 'linear-gradient(135deg, #1E3A5F 0%, #172554 50%, #0F172A 100%)',
