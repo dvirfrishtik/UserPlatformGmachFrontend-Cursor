@@ -61,7 +61,7 @@ export function InitialLoanRequestIntro({ isOpen, onClose, onStartProcess }: Ini
           >
             {/* Content column – מובייל: מתחת לאיור, דסקטופ: מימין; רוחב מלא במובייל */}
             <div
-              className="flex flex-col items-start w-full md:w-auto order-2 md:order-0 flex-1 md:flex-initial min-w-0 max-w-full md:max-w-[min(617px,49%)]"
+              className="flex flex-col items-start w-full md:w-auto order-2 md:order-0 flex-1 md:flex-initial min-w-0 max-w-full md:max-w-[min(480px,42%)]"
               style={{
                 textAlign: 'right',
                 alignSelf: 'stretch',
@@ -75,7 +75,7 @@ export function InitialLoanRequestIntro({ isOpen, onClose, onStartProcess }: Ini
                 style={{
                   fontFamily: 'SimplerPro',
                   fontWeight: 700,
-                  fontSize: 'clamp(20px, 5vw, 45px)',
+                  fontSize: 'clamp(18px, 4vw, 32px)',
                   lineHeight: 1.25,
                   textAlign: 'right',
                   color: '#172554',
