@@ -36,11 +36,11 @@ const LOAN_TERMS_SECTIONS = [
 ];
 
 const MARITAL_OPTIONS = [
-  { value: 'married', label: 'נשוי' },
-  { value: 'engaged', label: 'מאורס' },
-  { value: 'single', label: 'רווק' },
-  { value: 'divorced', label: 'גרוש' },
-  { value: 'widowed', label: 'אלמן' },
+  { value: 'married', label: 'נשוי/אה' },
+  { value: 'engaged', label: 'מאורס/ת' },
+  { value: 'single', label: 'רווק/ה' },
+  { value: 'divorced', label: 'גרוש/ה' },
+  { value: 'widowed', label: 'אלמן/ה' },
 ] as const;
 
 const WIZARD_STEPS = [
@@ -326,10 +326,10 @@ export interface GuarantorData {
 
 const MARITAL_STATUS_OPTIONS = [
   { value: '', label: 'בחירה' },
-  { value: 'single', label: 'רווק' },
-  { value: 'married', label: 'נשוי' },
-  { value: 'divorced', label: 'גרוש' },
-  { value: 'widowed', label: 'אלמן' },
+  { value: 'single', label: 'רווק/ה' },
+  { value: 'married', label: 'נשוי/אה' },
+  { value: 'divorced', label: 'גרוש/ה' },
+  { value: 'widowed', label: 'אלמן/ה' },
 ];
 
 const CITY_OPTIONS = [
@@ -1647,7 +1647,7 @@ function Step1Form({
                 textAlign: 'right',
               }}
             >
-              {step1.maritalStatus === 'married' ? 'פרטי בת הזוג של הלווה' : 'פרטי המאורסת של הלווה'}
+              {step1.maritalStatus === 'married' ? 'פרטי בת/בן הזוג של הלווה' : 'פרטי המאורס/ת של הלווה'}
             </h3>
             <div className="flex flex-col gap-4">
               {/* Row: שם מלא | ת.ז. | תאריך לידה */}
