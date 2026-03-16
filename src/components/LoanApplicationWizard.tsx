@@ -2321,21 +2321,21 @@ function UnitCard({
 
       {/* Data row – RTL: עבור, שנת ייעוד, זכאות הלוואה – יישור לימין, ללא שבירת שורות */}
       <div className="flex flex-row items-stretch w-full gap-4" style={{ direction: 'rtl' }}>
-        <div className="flex flex-col items-end flex-1 min-w-0">
-          <span
-            className="block w-full"
-            style={{
-              fontFamily: 'var(--font-family-base)',
-              fontSize: '11px',
-              color: '#9CA3AF',
-              textAlign: 'right',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            עבור
-          </span>
-          <Tooltip>
-            <TooltipTrigger asChild>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="flex flex-col items-end flex-1 min-w-0 cursor-help">
+              <span
+                className="block w-full"
+                style={{
+                  fontFamily: 'var(--font-family-base)',
+                  fontSize: '11px',
+                  color: '#9CA3AF',
+                  textAlign: 'right',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                עבור
+              </span>
               <span
                 className="block w-full truncate"
                 style={{
@@ -2348,12 +2348,12 @@ function UnitCard({
               >
                 {unit.forName}
               </span>
-            </TooltipTrigger>
-            <TooltipContent side="top" className="max-w-[280px] break-words text-right" sideOffset={6}>
-              {unit.forName}
-            </TooltipContent>
-          </Tooltip>
-        </div>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent side="top" className="max-w-[280px] break-words text-right" sideOffset={6}>
+            {unit.forName}
+          </TooltipContent>
+        </Tooltip>
         <div className="flex flex-col items-end flex-1 min-w-0">
           <span
             className="block w-full"
