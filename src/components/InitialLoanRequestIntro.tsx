@@ -15,10 +15,27 @@ export function InitialLoanRequestIntro({ isOpen, onClose, onStartProcess }: Ini
   return (
     <div
       className="fixed inset-0 z-[100] flex flex-col min-w-0 overflow-x-hidden overflow-y-auto"
-      style={{ backgroundColor: '#FAFAFA', direction: 'rtl' }}
+      style={{ backgroundColor: '#FAFAFA', direction: 'rtl', animation: 'intro-fade-in 0.4s ease-out both' }}
     >
+      <style>{`
+        @keyframes intro-fade-in {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes intro-slide-down {
+          from { opacity: 0; transform: translateY(-20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes intro-slide-up {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes intro-scale-in {
+          from { opacity: 0; transform: scale(0.88); }
+          to { opacity: 1; transform: scale(1); }
+        }
+      `}</style>
       <div className="flex-1 flex flex-col min-h-full w-full min-w-0" dir="rtl" style={{ direction: 'rtl' }}>
-        {/* Header – רספונסיבי: מובייל מצומצם, דסקטופ מלא */}
         <header
           className="flex flex-row justify-between items-center shrink-0 px-4 py-3 min-h-[56px] md:min-h-[72px] md:px-[38px] md:py-4"
           style={{
@@ -26,6 +43,7 @@ export function InitialLoanRequestIntro({ isOpen, onClose, onStartProcess }: Ini
             borderBottom: '1px solid #E8EDF2',
             boxShadow: '9.53704px 7.80303px 43.3502px rgba(33, 132, 213, 0.1)',
             direction: 'rtl',
+            animation: 'intro-slide-down 0.5s ease-out 0.1s both',
           }}
         >
           <div className="flex flex-col items-start gap-0.5 min-w-0 flex-1" style={{ textAlign: 'right' }}>
@@ -67,6 +85,7 @@ export function InitialLoanRequestIntro({ isOpen, onClose, onStartProcess }: Ini
                 alignSelf: 'stretch',
                 alignItems: 'flex-start',
                 gap: 'clamp(20px, 4vw, 50px)',
+                animation: 'intro-slide-up 0.6s ease-out 0.25s both',
               }}
             >
               {/* Title – במובייל עטיפה, גודל קריא */}
@@ -195,6 +214,7 @@ export function InitialLoanRequestIntro({ isOpen, onClose, onStartProcess }: Ini
               className="flex-none flex items-center justify-center order-1 md:order-1 w-[min(220px,70vw)] h-[min(220px,70vw)] sm:w-[min(260px,75vw)] sm:h-[min(260px,75vw)] md:w-[min(515px,40vw)] md:h-[min(515px,40vw)] max-w-full min-w-0"
               style={{
                 filter: 'drop-shadow(9.53704px 7.80303px 43.3502px rgba(33, 132, 213, 0.1))',
+                animation: 'intro-scale-in 0.7s ease-out 0.15s both',
               }}
             >
               <Image
