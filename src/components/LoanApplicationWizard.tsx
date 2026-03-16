@@ -2202,7 +2202,7 @@ function Step2Form({
               }}
               dir="rtl"
             >
-              <span>יחידות נוספות שנתרמו במלואן ({additionalUnits.length})</span>
+              <span>יחידות נוספות שנתרמו במלואן, והגיע שנת ייעודן ({additionalUnits.length})</span>
               <ChevronLeft
                 size={16}
                 style={{
