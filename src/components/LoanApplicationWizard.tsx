@@ -75,50 +75,6 @@ const DEFAULT_CHILDREN_FOR_LOAN: ChildForLoan[] = [
   { id: 'child6', name: 'מיכל שולמית', unitsCount: 4 },
 ];
 
-/* ─── קפסולת מצב אישי (עיצוב תואם לכרטיסי ילדים/מטרת הלוואה/יחידות) ─── */
-function MaritalStatusChip({
-  label,
-  selected,
-  onClick,
-}: {
-  label: string;
-  selected: boolean;
-  onClick: () => void;
-}) {
-  const [isHovered, setIsHovered] = useState(false);
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="flex items-center justify-center w-full min-w-0 transition-all text-center cursor-pointer outline-none"
-      style={{
-        padding: '10px 16px',
-        borderRadius: 999,
-        backgroundColor: '#FFFFFF',
-        border: selected ? '1.5px solid #3B82F6' : '1.5px solid transparent',
-        boxShadow: selected
-          ? '0 0 12px rgba(59, 130, 246, 0.12)'
-          : isHovered
-            ? '0 0 12px rgba(24, 47, 67, 0.12)'
-            : '0 0 12px rgba(24, 47, 67, 0.06)',
-      }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <span
-        style={{
-          fontFamily: 'var(--font-family-base)',
-          fontSize: 'var(--text-sm)',
-          fontWeight: selected ? 'var(--font-weight-semibold)' : 'var(--font-weight-normal)',
-          color: selected ? '#141E44' : '#495157',
-          whiteSpace: 'nowrap',
-        }}
-      >
-        {label}
-      </span>
-    </button>
-  );
-}
 
 /* ─── אווטר כרטיס (זהה לרכישת יחידות) ─── */
 function BorrowerAvatarIcon({ size = 40 }: { size?: number }) {
@@ -1631,16 +1587,45 @@ function Step1Form({
           >
             מצב אישי של הלווה
           </label>
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-0">
             {MARITAL_OPTIONS.map((opt, i) => {
               const selected = step1.maritalStatus === opt.value;
+              const isFirst = i === 0;
+              const isLast = i === MARITAL_OPTIONS.length - 1;
               return (
-                <MaritalStatusChip
+                <button
                   key={opt.value}
-                  label={opt.label}
-                  selected={selected}
+                  type="button"
                   onClick={() => setStep1((p) => ({ ...p, maritalStatus: opt.value }))}
-                />
+                  className="inline-flex items-center justify-center gap-2 min-h-[44px] h-11 cursor-pointer transition-all border"
+                  style={{
+                    fontFamily: 'var(--font-family-base)',
+                    fontSize: 'var(--text-sm)',
+                    fontWeight: selected ? 'var(--font-weight-semibold)' : 'var(--font-weight-normal)',
+                    color: selected ? 'var(--primary)' : 'var(--muted-foreground)',
+                    background: selected ? '#EFF6FF' : 'var(--card)',
+                    borderColor: selected ? 'var(--primary)' : 'var(--border)',
+                    borderRadius: isFirst ? '0 999px 999px 0' : isLast ? '999px 0 0 999px' : 0,
+                    marginRight: isFirst ? 0 : -1,
+                    position: 'relative',
+                    zIndex: selected ? 1 : 0,
+                  }}
+                >
+                  <span
+                    className="flex items-center justify-center w-[18px] h-[18px] rounded-full shrink-0"
+                    style={{
+                      border: `2px solid ${selected ? 'var(--primary)' : 'var(--border)'}`,
+                    }}
+                  >
+                    {selected && (
+                      <span
+                        className="w-2.5 h-2.5 rounded-full"
+                        style={{ background: 'var(--primary)' }}
+                      />
+                    )}
+                  </span>
+                  {opt.label}
+                </button>
               );
             })}
           </div>
@@ -1649,7 +1634,7 @@ function Step1Form({
         {/* ─── פרטי בת/בן זוג / מאורסת (מוצג כשנשוי או מאורס) ─── */}
         {(step1.maritalStatus === 'married' || step1.maritalStatus === 'engaged') && (
           <div
-            className="rounded-xl px-4 py-4 sm:px-6 sm:py-6 mt-3"
+            className="rounded-xl px-4 py-4 sm:px-6 sm:py-6 mt-2"
             style={{
               background: '#FFFFFF',
               border: '1px solid #E5E9F9',
@@ -1668,18 +1653,6 @@ function Step1Form({
             >
               {step1.maritalStatus === 'married' ? 'פרטי בת הזוג של הלווה' : 'פרטי המאורסת של הלווה'}
             </h3>
-            <p
-              className="mb-4"
-              style={{
-                fontFamily: 'var(--font-family-base)',
-                fontSize: '13px',
-                color: '#6B7280',
-                textAlign: 'right',
-                lineHeight: 1.5,
-              }}
-            >
-              נשמח לכמה פרטים בסיסיים על בת/בן הזוג, כדי שנוכל להבין טוב יותר את מצבכם המשפחתי.
-            </p>
             <div className="flex flex-col gap-4">
               {/* Row: שם מלא | ת.ז. | תאריך לידה */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
