@@ -166,17 +166,21 @@ export function PaymentMethodCard({
                 e.stopPropagation();
                 setIsMenuOpen(!isMenuOpen);
               }}
-              className="text-muted-foreground hover:text-foreground transition-all"
+              className="text-muted-foreground hover:text-foreground transition-all flex items-center gap-1.5"
               style={{
                 borderRadius: "var(--radius-button, 8px)",
-                padding: "6px 16px",
+                padding: "6px 14px",
                 fontSize: "var(--text-sm, 14px)",
                 fontWeight: "var(--font-weight-semibold, 600)",
                 lineHeight: "20px",
                 background: "white",
+                border: "1px solid var(--border)",
               }}
             >
-              פעולות
+              <span>פעולות</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.7 }}>
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
             </button>
 
             {isMenuOpen && (
