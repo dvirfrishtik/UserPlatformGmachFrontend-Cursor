@@ -1,13 +1,12 @@
 'use client';
 
+import svgPaths from "../../imports/svg-uq5jcfbn1j";
 import { Button } from "@/components/ui/button";
 
-function IconPlusCircle() {
+function IconRefresh() {
   return (
-    <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="9" />
-      <line x1="12" y1="8" x2="12" y2="16" />
-      <line x1="8" y1="12" x2="16" y2="12" />
+    <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
+      <path d={svgPaths.p16638f80} stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
     </svg>
   );
 }
@@ -148,8 +147,8 @@ export function ChargesTable({ charges }: ChargesTableProps) {
                     size="lg"
                     className="border-primary text-secondary-foreground hover:bg-primary/5 hover:text-secondary-foreground font-semibold rounded-lg"
                   >
-                    הוסף ילד/ה
-                    <IconPlusCircle />
+                    החלפת אמצעי תשלום
+                    <IconRefresh />
                   </Button>
                 </div>
               </div>
@@ -225,8 +224,8 @@ export function ChargesTable({ charges }: ChargesTableProps) {
               size="lg"
               className="w-full border-primary text-secondary-foreground hover:bg-primary/5 hover:text-secondary-foreground font-semibold rounded-lg"
             >
-              הוסף ילד/ה
-              <IconPlusCircle />
+              החלפת אמצעי תשלום
+              <IconRefresh />
             </Button>
           </div>
         ))}
