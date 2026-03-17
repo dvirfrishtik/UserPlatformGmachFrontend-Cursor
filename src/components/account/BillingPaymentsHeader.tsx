@@ -1,30 +1,13 @@
 'use client';
 
-import svgPaths from "../../imports/svg-avc5kom8w6";
-
-function IconFullPlusCircle() {
-  return (
-    <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-      <path
-        clipRule="evenodd"
-        d={svgPaths.p2e771900}
-        fill="currentColor"
-        fillRule="evenodd"
-      />
-    </svg>
-  );
-}
-
 interface BillingPaymentsHeaderProps {
   activeTab: "active" | "inactive";
   onTabChange: (tab: "active" | "inactive") => void;
-  onAddPaymentMethod: () => void;
 }
 
 export function BillingPaymentsHeader({
   activeTab,
   onTabChange,
-  onAddPaymentMethod,
 }: BillingPaymentsHeaderProps) {
   return (
     <div
@@ -131,58 +114,6 @@ export function BillingPaymentsHeader({
           </button>
         </div>
 
-        {/* Separator */}
-        <div
-          className="bg-border shrink-0 self-stretch hidden md:block"
-          style={{
-            width: "1px",
-            marginLeft: "var(--spacing-3, 12px)",
-            marginRight: "var(--spacing-3, 12px)",
-          }}
-        />
-
-        {/* Add Payment Method Button */}
-        <button
-          onClick={onAddPaymentMethod}
-          className="bg-primary text-primary-foreground items-center justify-center shrink-0 hover:opacity-90 transition-opacity h-full hidden md:flex"
-          style={{
-            borderRadius: "var(--radius-button)",
-            gap: "var(--spacing-2, 8px)",
-            paddingLeft: "var(--spacing-6, 24px)",
-            paddingRight: "var(--spacing-6, 24px)",
-            paddingTop: "var(--spacing-3, 12px)",
-            paddingBottom: "var(--spacing-3, 12px)",
-          }}
-        >
-          <p
-            className="text-right whitespace-nowrap"
-            style={{
-              fontSize: "var(--text-base)",
-              fontWeight: "var(--font-weight-bold)",
-              lineHeight: "20px",
-            }}
-          >
-            הוספת אמצעי תשלום
-          </p>
-          <IconFullPlusCircle />
-        </button>
-
-        {/* Mobile Add Button */}
-        <button
-          onClick={onAddPaymentMethod}
-          className="bg-primary text-primary-foreground flex items-center justify-center shrink-0 hover:opacity-90 transition-opacity h-full md:hidden"
-          style={{
-            borderRadius: "var(--radius-button)",
-            paddingLeft: "var(--spacing-3, 12px)",
-            paddingRight: "var(--spacing-3, 12px)",
-            paddingTop: "var(--spacing-2, 8px)",
-            paddingBottom: "var(--spacing-2, 8px)",
-            width: "40px",
-          }}
-          aria-label="הוספת אמצעי תשלום"
-        >
-          <IconFullPlusCircle />
-        </button>
       </div>
     </div>
   );

@@ -133,7 +133,6 @@ export default function AccountPage() {
           <BillingPaymentsHeader
             activeTab={billingTab}
             onTabChange={setBillingTab}
-            onAddPaymentMethod={() => console.log("Add payment method")}
           />
 
           <div className="mt-6 md:mt-8 grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
