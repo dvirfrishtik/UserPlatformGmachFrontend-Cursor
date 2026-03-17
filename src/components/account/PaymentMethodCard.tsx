@@ -8,7 +8,7 @@ import svgPathsRefresh from "../../imports/svg-uq5jcfbn1j";
 
 function IconOutlineBank() {
   return (
-    <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
+    <svg width="16" height="16" fill="none" viewBox="0 0 20 20">
       <path d={svgPathsBank.pc548680} stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.25" />
       <path d={svgPathsBank.p9cc3480} stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.25" />
       <path d={svgPathsBank.p363d500} stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.25" />
@@ -19,7 +19,7 @@ function IconOutlineBank() {
 
 function IconOutlineCreditCard() {
   return (
-    <svg width="20" height="20" fill="none" viewBox="0 0 24 24">
+    <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
       <path d={svgPathsCard.p3bcd8300} stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
       <path d="M10 16H11.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="1.5" />
       <path d="M14.5 16H18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="1.5" />
@@ -134,11 +134,11 @@ export function PaymentMethodCard({
           <div
             className="bg-primary text-primary-foreground flex items-center justify-start shrink-0"
             style={{
-              gap: "var(--spacing-2, 8px)",
-              paddingLeft: "var(--spacing-4, 16px)",
-              paddingRight: "var(--spacing-4, 16px)",
-              paddingTop: "var(--spacing-2, 8px)",
-              paddingBottom: "var(--spacing-2, 8px)",
+              gap: "6px",
+              paddingLeft: "12px",
+              paddingRight: "12px",
+              paddingTop: "8px",
+              paddingBottom: "8px",
               borderRadius: "9999px",
             }}
           >
@@ -146,9 +146,9 @@ export function PaymentMethodCard({
             <p
               className="text-right whitespace-nowrap"
               style={{
-                fontSize: "var(--text-sm)",
+                fontSize: "var(--text-xs, 12px)",
                 fontWeight: "var(--font-weight-bold)",
-                lineHeight: "18px",
+                lineHeight: "16px",
               }}
             >
               {lastFourDigits}
