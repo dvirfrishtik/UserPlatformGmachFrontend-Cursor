@@ -176,13 +176,13 @@ export default function AccountPage() {
 
           {expandedCardId === 1 && (
             <div className="mt-6 md:mt-8">
-              <ChargesTable charges={mockCharges} />
+              <ChargesTable charges={mockCharges} paymentMethodLabel="988-4893855" paymentMethodType="bank" />
             </div>
           )}
 
           {expandedCardId === 2 && (
             <div className="mt-6 md:mt-8">
-              <ChargesTable charges={mockChargesMax} />
+              <ChargesTable charges={mockChargesMax} paymentMethodLabel="4783" paymentMethodType="credit" />
             </div>
           )}
         </div>
