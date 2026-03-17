@@ -62,7 +62,11 @@ export function AppSidebar() {
       </div>
 
       {/* Scrollable menu area */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden px-2 py-4">
+      <style>{`
+        .sidebar-scroll::-webkit-scrollbar { width: 0; background: transparent; }
+        .sidebar-scroll { scrollbar-width: none; }
+      `}</style>
+      <div className="sidebar-scroll flex-1 overflow-y-auto overflow-x-hidden px-2 py-4">
         <div className="flex flex-col gap-2">
           {menuItems.slice(0, 2).map((item) => (
             <SidebarItem
@@ -142,7 +146,7 @@ export function AppSidebar() {
       </div>
 
       {/* Account Section - fixed at bottom */}
-      <div className="shrink-0 px-2 pb-4 pt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+      <div className="shrink-0 px-2 pb-4 pt-2" style={{ boxShadow: '0 -6px 12px rgba(0, 0, 0, 0.25)' }}>
         <div className="flex flex-col">
           {accountItems.map((item) => (
             <SidebarItem
