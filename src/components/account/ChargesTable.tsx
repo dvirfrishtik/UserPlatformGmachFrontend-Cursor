@@ -1,7 +1,6 @@
 'use client';
 
 import svgPaths from "../../imports/svg-uq5jcfbn1j";
-import { useState } from "react";
 
 function IconRefresh() {
   return (
@@ -18,6 +17,7 @@ interface ChargeRow {
   childName: string;
   monthlyAmount: string;
   chargeDay?: number;
+  nextChargeDate?: string;
   paidPayments: {
     count: number;
     totalAmount: string;
@@ -39,8 +39,6 @@ interface ChargesTableProps {
 }
 
 export function ChargesTable({ charges }: ChargesTableProps) {
-  const [hoveredChargeId, setHoveredChargeId] = useState<number | null>(null);
-
   return (
     <div className="flex flex-col w-full" dir="rtl">
       {/* Desktop Table View */}
@@ -63,27 +61,32 @@ export function ChargesTable({ charges }: ChargesTableProps) {
               borderBottom: "1px solid var(--border)",
             }}
           >
-            <div className="flex items-center justify-start" style={{ width: "200px", paddingLeft: "var(--spacing-4, 16px)" }}>
+            <div className="flex items-center justify-start" style={{ width: "110px", paddingLeft: "var(--spacing-3, 12px)" }}>
               <p className="text-muted-foreground text-right" style={{ fontSize: "var(--text-sm, 14px)", fontWeight: "var(--font-weight-bold, 700)", lineHeight: "18px" }}>
                 תשלום עבור
               </p>
             </div>
-            <div className="flex items-center justify-start" style={{ width: "200px", paddingLeft: "var(--spacing-4, 16px)" }}>
+            <div className="flex items-center justify-start" style={{ width: "130px", paddingLeft: "var(--spacing-3, 12px)" }}>
               <p className="text-muted-foreground text-right" style={{ fontSize: "var(--text-sm, 14px)", fontWeight: "var(--font-weight-bold, 700)", lineHeight: "18px" }}>
                 מס׳ מזהה
               </p>
             </div>
-            <div className="flex items-center justify-start" style={{ width: "160px", paddingLeft: "var(--spacing-4, 16px)" }}>
+            <div className="flex items-center justify-start" style={{ width: "120px", paddingLeft: "var(--spacing-3, 12px)" }}>
               <p className="text-muted-foreground text-right" style={{ fontSize: "var(--text-sm, 14px)", fontWeight: "var(--font-weight-bold, 700)", lineHeight: "18px" }}>
                 סכום חודשי
               </p>
             </div>
-            <div className="flex items-center justify-start flex-1" style={{ paddingLeft: "var(--spacing-4, 16px)" }}>
+            <div className="flex items-center justify-start" style={{ width: "140px", paddingLeft: "var(--spacing-3, 12px)" }}>
               <p className="text-muted-foreground text-right" style={{ fontSize: "var(--text-sm, 14px)", fontWeight: "var(--font-weight-bold, 700)", lineHeight: "18px" }}>
                 יום חיוב בחודש
               </p>
             </div>
-            <div style={{ width: "48px" }} />
+            <div className="flex items-center justify-start" style={{ width: "110px", paddingLeft: "var(--spacing-3, 12px)" }}>
+              <p className="text-muted-foreground text-right" style={{ fontSize: "var(--text-sm, 14px)", fontWeight: "var(--font-weight-bold, 700)", lineHeight: "18px" }}>
+                חיוב קרוב
+              </p>
+            </div>
+            <div className="flex-1" />
           </div>
 
           {/* Table Rows */}
@@ -100,12 +103,12 @@ export function ChargesTable({ charges }: ChargesTableProps) {
                   borderBottom: index < charges.length - 1 ? "1px solid var(--border)" : "none",
                 }}
               >
-                <div className="flex items-center justify-start" style={{ width: "200px", paddingLeft: "var(--spacing-4, 16px)" }}>
+                <div className="flex items-center justify-start" style={{ width: "110px", paddingLeft: "var(--spacing-3, 12px)" }}>
                   <p className="text-foreground text-right" style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-normal)", lineHeight: "20px" }}>
                     {charge.type === "loan" ? "הלוואה" : "יחידה"}
                   </p>
                 </div>
-                <div className="flex flex-col items-start justify-center" style={{ width: "200px", paddingLeft: "var(--spacing-4, 16px)" }}>
+                <div className="flex flex-col items-start justify-center" style={{ width: "130px", paddingLeft: "var(--spacing-3, 12px)" }}>
                   <p className="text-foreground text-right" style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-normal)", lineHeight: "20px" }}>
                     {charge.identifier}
                   </p>
@@ -115,58 +118,44 @@ export function ChargesTable({ charges }: ChargesTableProps) {
                     </p>
                   )}
                 </div>
-                <div className="flex items-center justify-start" style={{ width: "160px", paddingLeft: "var(--spacing-4, 16px)" }}>
+                <div className="flex items-center justify-start" style={{ width: "120px", paddingLeft: "var(--spacing-3, 12px)" }}>
                   <p className="text-foreground text-right" style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-bold, 700)", lineHeight: "20px" }}>
                     {charge.monthlyAmount}
                   </p>
                 </div>
-                <div className="flex items-center justify-start flex-1 gap-2" style={{ paddingLeft: "var(--spacing-4, 16px)" }}>
+                <div className="flex items-center justify-start gap-2" style={{ width: "140px", paddingLeft: "var(--spacing-3, 12px)" }}>
                   <p className="text-foreground text-right" style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-normal)", lineHeight: "20px" }}>
                     {charge.chargeDay ? `${charge.chargeDay} לחודש` : '—'}
                   </p>
                   <button
                     className="flex items-center justify-center text-muted-foreground hover:text-primary transition-colors shrink-0"
-                    style={{
-                      width: 28,
-                      height: 28,
-                      borderRadius: '50%',
-                      background: 'rgba(59, 130, 246, 0.06)',
-                    }}
+                    style={{ width: 26, height: 26, borderRadius: '50%', background: 'rgba(59, 130, 246, 0.06)' }}
                     aria-label="עריכת יום חיוב"
                   >
                     <IconPencil />
                   </button>
                 </div>
-                <div className="relative">
+                <div className="flex items-center justify-start" style={{ width: "110px", paddingLeft: "var(--spacing-3, 12px)" }}>
+                  <p className="text-foreground text-right" style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-normal)", lineHeight: "20px" }}>
+                    {charge.nextChargeDate || '—'}
+                  </p>
+                </div>
+                <div className="flex-1 flex items-center justify-end">
                   <button
-                    className="flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-all"
-                    style={{ width: "40px", height: "40px", borderRadius: "var(--radius-button)" }}
-                    onMouseEnter={() => setHoveredChargeId(charge.id)}
-                    onMouseLeave={() => setHoveredChargeId(null)}
-                    aria-label="החלפת אמצעי תשלום"
+                    className="inline-flex items-center gap-1.5 text-primary hover:bg-muted/50 transition-colors whitespace-nowrap"
+                    style={{
+                      fontSize: "var(--text-sm, 14px)",
+                      fontWeight: "var(--font-weight-semibold, 600)",
+                      lineHeight: "18px",
+                      padding: "6px 12px",
+                      borderRadius: "var(--radius-button)",
+                      border: "1px solid var(--border)",
+                      background: "var(--card)",
+                    }}
                   >
                     <IconRefresh />
+                    <span>החלפת אמצעי תשלום</span>
                   </button>
-                  {hoveredChargeId === charge.id && (
-                    <div
-                      className="absolute bg-card text-foreground border border-border pointer-events-none z-50"
-                      style={{
-                        bottom: "calc(100% + 8px)",
-                        left: "0",
-                        borderRadius: "var(--radius-button)",
-                        paddingLeft: "var(--spacing-3, 12px)",
-                        paddingRight: "var(--spacing-3, 12px)",
-                        paddingTop: "var(--spacing-2, 8px)",
-                        paddingBottom: "var(--spacing-2, 8px)",
-                        whiteSpace: "nowrap",
-                        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.06)",
-                      }}
-                    >
-                      <p style={{ fontSize: "var(--text-sm, 14px)", fontWeight: "var(--font-weight-normal)", lineHeight: "18px" }}>
-                        החלפת אמצעי תשלום
-                      </p>
-                    </div>
-                  )}
                 </div>
               </div>
             ))}
@@ -205,25 +194,37 @@ export function ChargesTable({ charges }: ChargesTableProps) {
                 {charge.monthlyAmount}
               </p>
             </div>
-            {charge.chargeDay && (
-              <div className="flex items-center justify-between w-full" style={{ paddingTop: 2 }}>
-                <div className="flex items-center gap-1.5">
-                  <p className="text-muted-foreground text-right" style={{ fontSize: "var(--text-sm, 14px)", fontWeight: "var(--font-weight-normal)", lineHeight: "18px" }}>
-                    יום חיוב:
-                  </p>
-                  <p className="text-foreground text-right" style={{ fontSize: "var(--text-sm, 14px)", fontWeight: "var(--font-weight-semibold, 600)", lineHeight: "18px" }}>
-                    {charge.chargeDay} לחודש
-                  </p>
-                </div>
-                <button
-                  className="flex items-center justify-center text-muted-foreground hover:text-primary transition-colors shrink-0"
-                  style={{ width: 28, height: 28, borderRadius: '50%', background: 'rgba(59, 130, 246, 0.06)' }}
-                  aria-label="עריכת יום חיוב"
-                >
-                  <IconPencil />
-                </button>
+            <div className="flex items-center justify-between w-full" style={{ paddingTop: 2 }}>
+              <div className="flex items-center gap-3">
+                {charge.chargeDay && (
+                  <div className="flex items-center gap-1.5">
+                    <p className="text-muted-foreground text-right" style={{ fontSize: "var(--text-sm, 14px)", fontWeight: "var(--font-weight-normal)", lineHeight: "18px" }}>
+                      יום חיוב:
+                    </p>
+                    <p className="text-foreground text-right" style={{ fontSize: "var(--text-sm, 14px)", fontWeight: "var(--font-weight-semibold, 600)", lineHeight: "18px" }}>
+                      {charge.chargeDay} לחודש
+                    </p>
+                    <button
+                      className="flex items-center justify-center text-muted-foreground hover:text-primary transition-colors shrink-0"
+                      style={{ width: 26, height: 26, borderRadius: '50%', background: 'rgba(59, 130, 246, 0.06)' }}
+                      aria-label="עריכת יום חיוב"
+                    >
+                      <IconPencil />
+                    </button>
+                  </div>
+                )}
+                {charge.nextChargeDate && (
+                  <div className="flex items-center gap-1.5">
+                    <p className="text-muted-foreground text-right" style={{ fontSize: "var(--text-sm, 14px)", fontWeight: "var(--font-weight-normal)", lineHeight: "18px" }}>
+                      חיוב קרוב:
+                    </p>
+                    <p className="text-foreground text-right" style={{ fontSize: "var(--text-sm, 14px)", fontWeight: "var(--font-weight-semibold, 600)", lineHeight: "18px" }}>
+                      {charge.nextChargeDate}
+                    </p>
+                  </div>
+                )}
               </div>
-            )}
+            </div>
             <button
               className="flex items-center justify-center text-primary hover:bg-muted/40 transition-all w-full"
               style={{

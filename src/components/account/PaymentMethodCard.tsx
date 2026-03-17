@@ -234,14 +234,6 @@ export function PaymentMethodCard({
               חיוב חודשי לבנק
             </p>
           </div>
-          <div className="flex flex-col items-start justify-start self-start" style={{ gap: "var(--spacing-0-5, 2px)" }}>
-            <p className="text-foreground text-right whitespace-nowrap" style={{ fontSize: "var(--text-xl)", fontWeight: "var(--font-weight-bold)", lineHeight: "24px" }}>
-              {nextChargeDate}
-            </p>
-            <p className="text-muted-foreground text-right whitespace-nowrap" style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-normal)", lineHeight: "16px" }}>
-              תאריך חיוב קרוב
-            </p>
-          </div>
           {activeChargesCount !== undefined && (
             <div className="flex flex-col items-start justify-start self-start" style={{ gap: "var(--spacing-0-5, 2px)" }}>
               <p className="text-foreground text-right whitespace-nowrap" style={{ fontSize: "var(--text-xl)", fontWeight: "var(--font-weight-bold)", lineHeight: "24px" }}>

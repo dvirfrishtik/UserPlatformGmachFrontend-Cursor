@@ -20,6 +20,7 @@ export default function AccountPage() {
       childName: "שרה לאה",
       monthlyAmount: "₪ 1,400",
       chargeDay: 5,
+      nextChargeDate: "05/02",
       paidPayments: { count: 30, totalAmount: "15,000 ₪" },
     },
     {
@@ -29,6 +30,7 @@ export default function AccountPage() {
       childName: "שרה לאה",
       monthlyAmount: "₪ 240",
       chargeDay: 5,
+      nextChargeDate: "05/02",
       paidPayments: { count: 30, totalAmount: "15,000 ₪" },
     },
     {
@@ -38,6 +40,7 @@ export default function AccountPage() {
       childName: "שרה לאה",
       monthlyAmount: "₪ 900",
       chargeDay: 12,
+      nextChargeDate: "12/02",
       paidPayments: { count: 30, totalAmount: "15,000 ₪" },
     },
     {
@@ -47,6 +50,7 @@ export default function AccountPage() {
       childName: "משה",
       monthlyAmount: "₪ 420",
       chargeDay: 5,
+      nextChargeDate: "05/02",
       paidPayments: { count: 24, totalAmount: "10,080 ₪" },
     },
     {
@@ -56,6 +60,7 @@ export default function AccountPage() {
       childName: "דוד",
       monthlyAmount: "₪ 240",
       chargeDay: 20,
+      nextChargeDate: "20/02",
       paidPayments: { count: 15, totalAmount: "3,600 ₪" },
     },
   ];
@@ -68,6 +73,7 @@ export default function AccountPage() {
       childName: "יעקב דוד",
       monthlyAmount: "₪ 800",
       chargeDay: 15,
+      nextChargeDate: "15/02",
       paidPayments: { count: 18, totalAmount: "8,500 ₪" },
     },
     {
@@ -77,6 +83,7 @@ export default function AccountPage() {
       childName: "רחל",
       monthlyAmount: "₪ 350",
       chargeDay: 15,
+      nextChargeDate: "15/02",
       paidPayments: { count: 22, totalAmount: "6,200 ₪" },
     },
     {
@@ -86,6 +93,7 @@ export default function AccountPage() {
       childName: "יעקב דוד",
       monthlyAmount: "₪ 350",
       chargeDay: 1,
+      nextChargeDate: "01/02",
       paidPayments: { count: 10, totalAmount: "3,500 ₪" },
     },
   ];
