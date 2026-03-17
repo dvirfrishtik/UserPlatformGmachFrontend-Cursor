@@ -3,6 +3,7 @@
 import svgPaths from "../imports/svg-fymzuqw3ph";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 export function AppSidebar() {
   const pathname = usePathname();
@@ -20,16 +21,21 @@ export function AppSidebar() {
   const lowerMenuItems = [
     { id: "kids", label: "הילדים שלי", icon: <IconKids />, href: "/kids" },
     { id: "documents", label: "מסמכים ואישורים", icon: <IconDocumentDuplicate />, href: "#" },
+  ];
+
+  const toolsItems = [
     { id: "programs", label: "תכניות הגמ״ח", icon: <IconSquares2X />, external: true, href: "#" },
     { id: "simulator", label: "סימולטור", icon: <IconCubeTransparent />, external: true, href: "#" },
+    { id: "accessibility", label: "נגישות", icon: <IconAccessible />, href: "#" },
   ];
 
   const accountItems = [
     { id: "account", label: "החשבון שלי", icon: <IconChild />, href: "/account" },
     { id: "referrals", label: "הפניות שלי", icon: <IconContact />, href: "#" },
-    { id: "accessibility", label: "נגישות", icon: <IconAccessible />, href: "#" },
     { id: "logout", label: "התנתקות", icon: <IconLogOut />, href: "#" },
   ];
+
+  const [toolsOpen, setToolsOpen] = useState(false);
 
   const getActiveItem = () => {
     if (pathname === "/account") return "account";
@@ -92,10 +98,46 @@ export function AppSidebar() {
               label={item.label}
               icon={item.icon}
               isActive={activeItem === item.id}
-              external={item.external}
               href={item.href}
             />
           ))}
+
+          {/* Expandable tools section */}
+          <button
+            type="button"
+            onClick={() => setToolsOpen((v) => !v)}
+            className={`h-12 rounded flex items-center px-2 gap-2 relative cursor-pointer transition-colors w-full ${
+              toolsOpen ? 'bg-[rgba(255,255,255,0.1)]' : 'hover:bg-[rgba(255,255,255,0.05)]'
+            }`}
+            dir="rtl"
+          >
+            <div className="shrink-0"><IconEllipsis /></div>
+            <p className="text-white" style={{ fontSize: 'var(--text-sm)', fontWeight: toolsOpen ? 700 : 400 }}>
+              כלים ומידע נוסף
+            </p>
+            <div className="shrink-0 mr-auto">
+              <svg
+                width="16" height="16" fill="none" viewBox="0 0 24 24"
+                className={`transition-transform ${toolsOpen ? 'rotate-180' : ''}`}
+              >
+                <path d="M6 9l6 6 6-6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+          </button>
+          {toolsOpen && (
+            <div className="flex flex-col gap-0.5 pr-4">
+              {toolsItems.map((item) => (
+                <SidebarItem
+                  key={item.id}
+                  label={item.label}
+                  icon={item.icon}
+                  isActive={activeItem === item.id}
+                  external={item.external}
+                  href={item.href}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Account Section */}
@@ -265,9 +307,9 @@ function IconDocumentDuplicate() {
   return (
     <div className="w-6 h-6">
       <svg className="w-full h-full" fill="none" viewBox="0 0 24 24">
-        <path d={svgPaths.p3c1cf100} fill="#CCA559" />
-        <path d={svgPaths.pd21c400} fill="#CCA559" />
-        <path d={svgPaths.p37e10300} fill="#CCA559" />
+        <path d={svgPaths.p3c1cf100} fill="white" />
+        <path d={svgPaths.pd21c400} fill="white" />
+        <path d={svgPaths.p37e10300} fill="white" />
       </svg>
     </div>
   );
@@ -333,6 +375,18 @@ function IconLogOut() {
         <path d={svgPaths.p12248b80} stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
         <path d="M16 16L20 12L16 8" stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
         <path d="M20 12H9" stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+      </svg>
+    </div>
+  );
+}
+
+function IconEllipsis() {
+  return (
+    <div className="w-6 h-6">
+      <svg className="w-full h-full" fill="none" viewBox="0 0 24 24">
+        <circle cx="5" cy="12" r="1.5" fill="white" />
+        <circle cx="12" cy="12" r="1.5" fill="white" />
+        <circle cx="19" cy="12" r="1.5" fill="white" />
       </svg>
     </div>
   );
