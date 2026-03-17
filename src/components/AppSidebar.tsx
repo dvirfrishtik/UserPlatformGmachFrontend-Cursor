@@ -111,8 +111,10 @@ export function AppSidebar() {
             }`}
             dir="rtl"
           >
-            <div className="shrink-0"><IconEllipsis /></div>
-            <p className="text-white" style={{ fontSize: 'var(--text-sm)', fontWeight: toolsOpen ? 700 : 400 }}>
+            <div className="shrink-0">
+              <img src="/icons/tools-tab.svg" alt="" width={24} height={24} />
+            </div>
+            <p className={`${toolsOpen ? 'text-[#cca559] font-bold' : 'text-white'}`}>
               כלים ומידע נוסף
             </p>
             <div className="shrink-0 mr-auto">
