@@ -156,25 +156,27 @@ export function PaymentMethodCard({
           </div>
 
           {/* More Menu */}
-          <div className="relative" ref={menuRef}>
+          <div
+            className="relative transition-opacity duration-200"
+            ref={menuRef}
+            style={{ opacity: isSelected || isHovered || isMenuOpen ? 1 : 0, pointerEvents: isSelected || isHovered || isMenuOpen ? "auto" : "none" }}
+          >
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 setIsMenuOpen(!isMenuOpen);
               }}
-              className="text-secondary-foreground hover:bg-muted/60 transition-colors flex items-center justify-center gap-1"
+              className="text-muted-foreground hover:text-secondary-foreground transition-colors flex items-center justify-center gap-1.5"
               style={{
                 borderRadius: "var(--radius-button, 8px)",
-                border: "1px solid var(--border)",
-                padding: "4px 10px",
-                fontSize: "var(--text-xs, 12px)",
+                padding: "6px 12px",
+                fontSize: "var(--text-sm, 14px)",
                 fontWeight: "var(--font-weight-semibold, 600)",
-                lineHeight: "16px",
-                background: "var(--card)",
+                lineHeight: "18px",
               }}
             >
               <span>פעולות</span>
-              <div className="shrink-0" style={{ width: 16, height: 16 }}>
+              <div className="shrink-0" style={{ width: 18, height: 18 }}>
                 <IconOutlineEllipsisVertical />
               </div>
             </button>
