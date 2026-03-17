@@ -166,19 +166,19 @@ export function PaymentMethodCard({
                 e.stopPropagation();
                 setIsMenuOpen(!isMenuOpen);
               }}
-              className="text-muted-foreground hover:text-secondary-foreground transition-colors flex items-center justify-center gap-1.5"
+              className="text-muted-foreground hover:text-secondary-foreground transition-colors flex items-center justify-center gap-2"
               style={{
                 borderRadius: "var(--radius-button, 8px)",
-                padding: "6px 12px",
-                fontSize: "var(--text-sm, 14px)",
+                padding: "8px 14px",
+                fontSize: "var(--text-base, 16px)",
                 fontWeight: "var(--font-weight-semibold, 600)",
-                lineHeight: "18px",
+                lineHeight: "20px",
               }}
             >
-              <span>פעולות</span>
-              <div className="shrink-0" style={{ width: 18, height: 18 }}>
+              <div className="shrink-0" style={{ width: 20, height: 20 }}>
                 <IconOutlineEllipsisVertical />
               </div>
+              <span>פעולות</span>
             </button>
 
             {isMenuOpen && (
