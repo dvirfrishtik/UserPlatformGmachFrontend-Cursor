@@ -178,7 +178,8 @@ function ChangeChargeDayPopup({
   onSelectCharge: (charge: ChargeRow) => void;
   defaultAllChargesSelected?: boolean;
 }) {
-  const [selectedDay, setSelectedDay] = useState<number>(charge.chargeDay);
+  const currentChargeDay = charge.chargeDay ?? AVAILABLE_CHARGE_DAYS[0];
+  const [selectedDay, setSelectedDay] = useState<number>(currentChargeDay);
   const [isAllChargesSelected, setIsAllChargesSelected] = useState(false);
   const [isChargeDropdownOpen, setIsChargeDropdownOpen] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -186,7 +187,7 @@ function ChangeChargeDayPopup({
 
   useEffect(() => {
     if (isOpen) {
-      setSelectedDay(charge.chargeDay);
+      setSelectedDay(charge.chargeDay ?? AVAILABLE_CHARGE_DAYS[0]);
       setIsAllChargesSelected(defaultAllChargesSelected);
       setIsChargeDropdownOpen(false);
       setShowSuccess(false);
@@ -211,7 +212,7 @@ function ChangeChargeDayPopup({
 
   const chargeScopeLabel = isAllChargesSelected ? 'כל החיובים' : chargeLabel;
 
-  const hasChanged = selectedDay !== charge.chargeDay;
+  const hasChanged = selectedDay !== currentChargeDay;
   const canSubmit = hasChanged;
 
   const totalMonthlyForCharge = charge.monthlyAmount;
@@ -437,7 +438,7 @@ function ChangeChargeDayPopup({
                           onClick={() => {
                             setIsAllChargesSelected(false);
                             onSelectCharge(c);
-                            setSelectedDay(c.chargeDay);
+                            setSelectedDay(c.chargeDay ?? AVAILABLE_CHARGE_DAYS[0]);
                             setIsChargeDropdownOpen(false);
                           }}
                           className="w-full transition-colors"
@@ -488,8 +489,8 @@ function ChangeChargeDayPopup({
             </label>
             {(() => {
               const days = [...AVAILABLE_CHARGE_DAYS];
-              if (!days.includes(charge.chargeDay)) {
-                days.push(charge.chargeDay);
+              if (typeof currentChargeDay === 'number' && !days.includes(currentChargeDay)) {
+                days.push(currentChargeDay);
                 days.sort((a, b) => a - b);
               }
               const count = days.length;
@@ -499,7 +500,7 @@ function ChangeChargeDayPopup({
                   <div className="hidden sm:flex" style={{ direction: 'rtl' }}>
                     {days.map((day, i) => {
                       const selected = selectedDay === day;
-                      const isCurrent = day === charge.chargeDay;
+                      const isCurrent = day === currentChargeDay;
                       const isFirst = i === 0;
                       const isLast = i === count - 1;
                       return (
@@ -542,7 +543,7 @@ function ChangeChargeDayPopup({
                   <div className="flex sm:hidden flex-row gap-2 overflow-x-auto pb-1" dir="rtl">
                     {days.map((day) => {
                       const selected = selectedDay === day;
-                      const isCurrent = day === charge.chargeDay;
+                      const isCurrent = day === currentChargeDay;
                       return (
                         <button
                           key={day}
