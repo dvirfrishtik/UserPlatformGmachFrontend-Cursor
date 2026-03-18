@@ -588,14 +588,11 @@ function ChangeChargeDayPopup({
                   border: '1px solid #ff9800',
                   borderRadius: '8px',
                   padding: '12px 16px',
-                  flexDirection: 'row-reverse',
+                  flexDirection: 'row',
                   justifyContent: 'flex-start',
                   gap: '12px',
                 }}
               >
-                <div className="shrink-0 flex items-center justify-center" style={{ width: 22, height: 22 }}>
-                  <IconAlertInfoBadge />
-                </div>
                 <p
                   className="min-w-0"
                   style={{
@@ -609,15 +606,19 @@ function ChangeChargeDayPopup({
                 >
                   {isAllChargesSelected ? (
                     <>
-                      החל מהחיוב הקרוב, התשלום החודשי עבור כל החיובים תחת האמצעי הנבחר יתבצע ב-
+                      לאחר אישור השינויים, החל מהחיוב הקרוב, התשלום החודשי עבור כל החיובים תחת האמצעי הנבחר יתבצע ב-
                       <strong>{selectedDay} לחודש</strong>.
                     </>
                   ) : (
                     <>
-                      החל מהחיוב הקרוב, התשלום החודשי עבור {chargeScopeLabel} יתבצע ב-<strong>{selectedDay} לחודש</strong>.
+                      לאחר אישור השינויים, החל מהחיוב הקרוב, התשלום החודשי עבור {chargeScopeLabel} יתבצע ב-
+                      <strong>{selectedDay} לחודש</strong>.
                     </>
                   )}
                 </p>
+                <div className="shrink-0 flex items-center justify-center" style={{ width: 22, height: 22 }}>
+                  <IconAlertInfoBadge />
+                </div>
               </div>
 
               <div
@@ -627,14 +628,11 @@ function ChangeChargeDayPopup({
                   border: '1px solid #ff9800',
                   borderRadius: '8px',
                   padding: '12px 16px',
-                  flexDirection: 'row-reverse',
+                  flexDirection: 'row',
                   justifyContent: 'flex-start',
                   gap: '12px',
                 }}
               >
-                <div className="shrink-0 flex items-center justify-center" style={{ width: 22, height: 22 }}>
-                  <IconAlertInfoBadge />
-                </div>
                 <p
                   className="min-w-0"
                   style={{
@@ -646,8 +644,12 @@ function ChangeChargeDayPopup({
                     flex: 1,
                   }}
                 >
-                  החיוב הבא, על סה&quot;כ <strong>{totalMonthlyForCharge}</strong>, יתבצע בתאריך <strong>{getNextChargeDate(selectedDay)}</strong>.
+                  לאחר אישור השינויים, החיוב הבא, על סה&quot;כ <strong>{totalMonthlyForCharge}</strong>, יתבצע בתאריך{' '}
+                  <strong>{getNextChargeDate(selectedDay)}</strong>.
                 </p>
+                <div className="shrink-0 flex items-center justify-center" style={{ width: 22, height: 22 }}>
+                  <IconAlertInfoBadge />
+                </div>
               </div>
             </div>
           )}
