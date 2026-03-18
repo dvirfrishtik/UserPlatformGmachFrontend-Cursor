@@ -10,6 +10,7 @@ import { ChargesTable } from "@/components/account/ChargesTable";
 export default function AccountPage() {
   const [billingTab, setBillingTab] = useState<"active" | "inactive">("active");
   const [expandedCardId, setExpandedCardId] = useState<number | null>(1);
+  const [openChangeDayAllForPaymentMethodId, setOpenChangeDayAllForPaymentMethodId] = useState<number | null>(null);
 
   // Mock charges data
   const mockCharges = [
@@ -147,6 +148,10 @@ export default function AccountPage() {
               hasAnySelected={expandedCardId !== null}
               paymentMethodId={1}
               onTransferAllCharges={() => console.log("Transfer from 1")}
+              onChangeChargeDayAllCharges={(id) => {
+                setExpandedCardId(id);
+                setOpenChangeDayAllForPaymentMethodId(id);
+              }}
             />
             <PaymentMethodCard
               bankName="MAX"
@@ -160,6 +165,10 @@ export default function AccountPage() {
               hasAnySelected={expandedCardId !== null}
               paymentMethodId={2}
               onTransferAllCharges={() => console.log("Transfer from 2")}
+              onChangeChargeDayAllCharges={(id) => {
+                setExpandedCardId(id);
+                setOpenChangeDayAllForPaymentMethodId(id);
+              }}
             />
             <PaymentMethodCard
               bankName="מזרחי"
@@ -176,13 +185,25 @@ export default function AccountPage() {
 
           {expandedCardId === 1 && (
             <div className="mt-6 md:mt-8">
-              <ChargesTable charges={mockCharges} paymentMethodLabel="988-4893855" paymentMethodType="bank" />
+              <ChargesTable
+                charges={mockCharges}
+                paymentMethodLabel="988-4893855"
+                paymentMethodType="bank"
+                openChangeChargeDayAllCharges={openChangeDayAllForPaymentMethodId === 1}
+                onCloseChangeChargeDayAllCharges={() => setOpenChangeDayAllForPaymentMethodId(null)}
+              />
             </div>
           )}
 
           {expandedCardId === 2 && (
             <div className="mt-6 md:mt-8">
-              <ChargesTable charges={mockChargesMax} paymentMethodLabel="4783" paymentMethodType="credit" />
+              <ChargesTable
+                charges={mockChargesMax}
+                paymentMethodLabel="4783"
+                paymentMethodType="credit"
+                openChangeChargeDayAllCharges={openChangeDayAllForPaymentMethodId === 2}
+                onCloseChangeChargeDayAllCharges={() => setOpenChangeDayAllForPaymentMethodId(null)}
+              />
             </div>
           )}
         </div>

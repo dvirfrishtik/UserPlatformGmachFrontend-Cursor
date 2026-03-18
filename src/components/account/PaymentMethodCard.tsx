@@ -76,6 +76,7 @@ interface PaymentMethodCardProps {
   paymentType?: "bank" | "credit-card";
   paymentMethodId?: number;
   onTransferAllCharges?: (paymentMethodId: number) => void;
+  onChangeChargeDayAllCharges?: (paymentMethodId: number) => void;
 }
 
 export function PaymentMethodCard({
@@ -90,6 +91,7 @@ export function PaymentMethodCard({
   paymentType = "bank",
   paymentMethodId = 1,
   onTransferAllCharges,
+  onChangeChargeDayAllCharges,
 }: PaymentMethodCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -103,6 +105,9 @@ export function PaymentMethodCard({
     setIsMenuOpen(false);
     if (action === "change-payment" && onTransferAllCharges) {
       onTransferAllCharges(paymentMethodId);
+    }
+    if (action === "change-charge-day" && onChangeChargeDayAllCharges) {
+      onChangeChargeDayAllCharges(paymentMethodId);
     }
   };
 

@@ -27,6 +27,10 @@ interface ChargeRow {
   };
 }
 
+type ChangeChargeDayOpenRequest = {
+  scope: 'all';
+};
+
 function IconPencil() {
   return (
     <svg width="14" height="14" fill="none" viewBox="0 0 24 24">
@@ -70,6 +74,7 @@ function ChangeChargeDayPopup({
   paymentMethodLabel,
   paymentMethodType,
   onSelectCharge,
+  defaultAllChargesSelected = false,
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -78,6 +83,7 @@ function ChangeChargeDayPopup({
   paymentMethodLabel: string;
   paymentMethodType: 'bank' | 'credit';
   onSelectCharge: (charge: ChargeRow) => void;
+  defaultAllChargesSelected?: boolean;
 }) {
   const [selectedDay, setSelectedDay] = useState<number>(charge.chargeDay);
   const [isAllChargesSelected, setIsAllChargesSelected] = useState(false);
@@ -87,10 +93,10 @@ function ChangeChargeDayPopup({
   useEffect(() => {
     if (isOpen) {
       setSelectedDay(charge.chargeDay);
-      setIsAllChargesSelected(false);
+      setIsAllChargesSelected(defaultAllChargesSelected);
       setIsChargeDropdownOpen(false);
     }
-  }, [isOpen, charge.id, charge.chargeDay]);
+  }, [isOpen, charge.id, charge.chargeDay, defaultAllChargesSelected]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -544,10 +550,25 @@ interface ChargesTableProps {
   charges: ChargeRow[];
   paymentMethodLabel?: string;
   paymentMethodType?: 'bank' | 'credit';
+  openChangeChargeDayAllCharges?: boolean;
+  onCloseChangeChargeDayAllCharges?: () => void;
 }
 
-export function ChargesTable({ charges, paymentMethodLabel = '', paymentMethodType = 'bank' }: ChargesTableProps) {
+export function ChargesTable({
+  charges,
+  paymentMethodLabel = '',
+  paymentMethodType = 'bank',
+  openChangeChargeDayAllCharges,
+  onCloseChangeChargeDayAllCharges,
+}: ChargesTableProps) {
   const [editingCharge, setEditingCharge] = useState<ChargeRow | null>(null);
+
+  useEffect(() => {
+    if (openChangeChargeDayAllCharges) {
+      setEditingCharge(charges[0] ?? null);
+    }
+  }, [openChangeChargeDayAllCharges, charges]);
+
   return (
     <div className="flex flex-col w-full" dir="rtl">
       {/* Desktop Table View */}
@@ -749,12 +770,16 @@ export function ChargesTable({ charges, paymentMethodLabel = '', paymentMethodTy
       {editingCharge && (
         <ChangeChargeDayPopup
           isOpen={!!editingCharge}
-          onClose={() => setEditingCharge(null)}
+          onClose={() => {
+            setEditingCharge(null);
+            onCloseChangeChargeDayAllCharges?.();
+          }}
           charge={editingCharge}
           charges={charges}
           paymentMethodLabel={paymentMethodLabel}
           paymentMethodType={paymentMethodType}
           onSelectCharge={(c) => setEditingCharge(c)}
+          defaultAllChargesSelected={!!openChangeChargeDayAllCharges}
         />
       )}
     </div>
