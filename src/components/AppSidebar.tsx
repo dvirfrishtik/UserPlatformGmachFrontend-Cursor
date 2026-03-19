@@ -3,7 +3,7 @@
 import svgPaths from "../imports/svg-fymzuqw3ph";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function AppSidebar() {
   const pathname = usePathname();
@@ -36,6 +36,34 @@ export function AppSidebar() {
   ];
 
   const [toolsOpen, setToolsOpen] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const toolsButtonRef = useRef<HTMLButtonElement>(null);
+  const toolsContentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!toolsOpen) return;
+
+    const el = scrollRef.current;
+    if (!el) return;
+
+    // Wait for layout after expansion
+    requestAnimationFrame(() => {
+      const containerRect = el.getBoundingClientRect();
+      const target = toolsContentRef.current ?? toolsButtonRef.current;
+      if (!target) return;
+      const targetRect = target.getBoundingClientRect();
+
+      const bottomOverflow = targetRect.bottom - containerRect.bottom;
+      const topOverflow = containerRect.top - targetRect.top;
+
+      // Scroll only when the expanded content isn't fully visible
+      if (bottomOverflow > 8) {
+        el.scrollBy({ top: bottomOverflow + 12, behavior: "smooth" });
+      } else if (topOverflow > 8) {
+        el.scrollBy({ top: -(topOverflow + 12), behavior: "smooth" });
+      }
+    });
+  }, [toolsOpen]);
 
   const getActiveItem = () => {
     if (pathname === "/account") return "account";
@@ -66,7 +94,7 @@ export function AppSidebar() {
         .sidebar-scroll::-webkit-scrollbar { width: 0; background: transparent; }
         .sidebar-scroll { scrollbar-width: none; }
       `}</style>
-      <div className="sidebar-scroll flex-1 overflow-y-auto overflow-x-hidden px-2 py-4">
+      <div ref={scrollRef} className="sidebar-scroll flex-1 overflow-y-auto overflow-x-hidden px-2 py-4">
         <div className="flex flex-col gap-2">
           {menuItems.slice(0, 2).map((item) => (
             <SidebarItem
@@ -107,6 +135,7 @@ export function AppSidebar() {
           {/* Expandable tools section */}
           <button
             type="button"
+            ref={toolsButtonRef}
             onClick={() => setToolsOpen((v) => !v)}
             className={`h-12 rounded flex items-center px-2 gap-2 relative cursor-pointer transition-colors w-full ${
               toolsOpen ? 'bg-[rgba(255,255,255,0.1)]' : 'hover:bg-[rgba(255,255,255,0.05)]'
@@ -129,7 +158,7 @@ export function AppSidebar() {
             </div>
           </button>
           {toolsOpen && (
-            <div className="flex flex-col gap-0.5 pr-4">
+            <div ref={toolsContentRef} className="flex flex-col gap-0.5 pr-4">
               {toolsItems.map((item) => (
                 <SidebarItem
                   key={item.id}
@@ -146,7 +175,20 @@ export function AppSidebar() {
       </div>
 
       {/* Account Section - fixed at bottom */}
-      <div className="shrink-0 px-2 pb-4 pt-2" style={{ boxShadow: '0 -6px 12px rgba(0, 0, 0, 0.25)' }}>
+      <div
+        className="relative shrink-0 px-2 pb-4 pt-2"
+        style={{
+          boxShadow: '0 -12px 28px rgba(0, 0, 0, 0.45)',
+        }}
+      >
+        {/* Stronger scroll hint shadow/gradient above account area */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-6 left-0 right-0 h-6"
+          style={{
+            background: "linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0) 100%)",
+          }}
+        />
         <div className="flex flex-col">
           {accountItems.map((item) => (
             <SidebarItem
